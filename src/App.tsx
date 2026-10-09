@@ -12,16 +12,22 @@ import {
   ArrowUpRight,
   Check,
   ChevronDown,
+  Instagram,
+  Mail,
   MapPin,
   Palette,
   X,
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import {
+  AGENCY_SHOWCASE_ITEMS,
+  AgencyShowcaseItem,
   APPROACH_STEPS,
   BRAND_IMAGES,
   BUSINESS_CONTACT_PLACEHOLDERS,
   FAQ_ITEMS,
+  FEATURED_PROPERTIES,
+  FeaturedPropertyItem,
   PLACEHOLDER_TESTIMONIALS,
   SERVICE_PLAN_TIERS,
   SERVICES_LIST,
@@ -81,7 +87,7 @@ const LUXURY_THEMES: {
 export default function App() {
   const [gmpQuotaExceeded, setGmpQuotaExceeded] = useState(false);
 
-  // Active luxury color theme (defaults to the new Pacific Midnight & Warm Bronze palette)
+  // Active luxury color theme
   const [activeTheme, setActiveTheme] = useState<LuxuryThemeId>(() => {
     try {
       const saved = localStorage.getItem('aurel_color_theme_v1') as LuxuryThemeId | null;
@@ -114,14 +120,66 @@ export default function App() {
   const [preselectedTier, setPreselectedTier] = useState<string | undefined>(undefined);
   const [preselectedLocation, setPreselectedLocation] = useState<string | undefined>(undefined);
 
-  // Interactive states for Services Filter, Service Modal, Testimonials, FAQ Accordion, and Legal Modals
+  // Interactive states for Hero Photo Switcher, Agency Lookbook Filter, Services Filter, Modals, Testimonials, and FAQs
+  const [heroSlideIndex, setHeroSlideIndex] = useState(0);
+  const [lookbookFilter, setLookbookFilter] = useState<'all' | 'team-dress' | 'tools-kit'>('all');
+  const [activeLookbookModal, setActiveLookbookModal] = useState<AgencyShowcaseItem | null>(null);
   const [serviceFilter, setServiceFilter] = useState<
     'all' | 'residential' | 'commercial' | 'specialty'
   >('all');
   const [activeServiceModal, setActiveServiceModal] = useState<ServiceItem | null>(null);
+  const [propertyFilter, setPropertyFilter] = useState<
+    'all' | 'estate' | 'coastal-penthouse' | 'commercial-studio'
+  >('all');
+  const [activePropertyModal, setActivePropertyModal] = useState<FeaturedPropertyItem | null>(null);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [openFaqId, setOpenFaqId] = useState<string>(FAQ_ITEMS[0].id);
   const [legalModal, setLegalModal] = useState<'privacy' | 'terms' | null>(null);
+
+  const heroShowcases = [
+    {
+      id: 'team-portrait',
+      tabLabel: 'Our Team',
+      kicker: 'About Us · Single Group Portrait',
+      title: 'The Aurel California Specialist Team',
+      caption:
+        'Our coordinated four-specialist California team in tailored midnight-navy collared shirts and slate aprons with wooden surface caddies.',
+      image: BRAND_IMAGES.teamUniformPhotoshoot,
+    },
+    {
+      id: 'tools-arsenal',
+      tabLabel: 'HEPA & Tools',
+      kicker: 'Complete Equipment Arsenal',
+      title: 'HEPA H14 Vacuums, Brass Squeegees & Sprays',
+      caption:
+        'Commercial stainless HEPA H14 filtration canisters, walnut bottle carriers, solid brass squeegees, and color-coded waffle microfiber.',
+      image: BRAND_IMAGES.agencyEquipmentArsenal,
+    },
+    {
+      id: 'surface-caddy',
+      tabLabel: 'Surface Kit',
+      kicker: 'Hand-Carried Detailing Tools',
+      title: 'Bespoke Room-by-Room Surface Caddy',
+      caption:
+        'Compartmented caddies stocked with pH-neutral stone and wood formulations in amber glass and natural horsehair detailing brushes.',
+      image: BRAND_IMAGES.cleaningToolsKit,
+    },
+    {
+      id: 'california-estates',
+      tabLabel: 'Properties',
+      kicker: 'Signature California Portfolio',
+      title: 'Private Estates, Penthouses & Studios',
+      caption:
+        'Tailored architectural surface care across Beverly Hills, Malibu, San Francisco, Montecito, and Bel Air.',
+      image: BRAND_IMAGES.beverlyHillsVilla,
+    },
+  ];
+  const activeHeroShowcase = heroShowcases[heroSlideIndex] || heroShowcases[0];
+
+  const filteredLookbookItems =
+    lookbookFilter === 'all'
+      ? AGENCY_SHOWCASE_ITEMS
+      : AGENCY_SHOWCASE_ITEMS.filter((item) => item.category === lookbookFilter);
 
   // Newsletter state
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -147,6 +205,41 @@ export default function App() {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  // Sync California service-area SEO meta viewport & description tags dynamically
+  useEffect(() => {
+    const homeDescription =
+      'Luxury residential and commercial cleaning in California — serving Beverly Hills, Malibu, San Francisco, Montecito, and Newport Beach. Request a custom quote.';
+    const bookDescription =
+      'Book luxury residential, deep cleaning, post-construction, or commercial property care across Beverly Hills, Malibu, San Francisco, Montecito, and Orange County.';
+
+    const targetDescription = activePage === 'book' ? bookDescription : homeDescription;
+
+    let viewportMeta = document.querySelector('meta[name="viewport"]');
+    if (!viewportMeta) {
+      viewportMeta = document.createElement('meta');
+      viewportMeta.setAttribute('name', 'viewport');
+      document.head.appendChild(viewportMeta);
+    }
+    viewportMeta.setAttribute(
+      'content',
+      'width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover'
+    );
+
+    const setMetaContent = (selector: string, attrName: 'name' | 'property', attrValue: string, content: string) => {
+      let el = document.querySelector(selector);
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attrName, attrValue);
+        document.head.appendChild(el);
+      }
+      el.setAttribute('content', content);
+    };
+
+    setMetaContent('meta[name="description"]', 'name', 'description', targetDescription);
+    setMetaContent('meta[property="og:description"]', 'property', 'og:description', targetDescription);
+    setMetaContent('meta[name="twitter:description"]', 'name', 'twitter:description', targetDescription);
+  }, [activePage]);
 
   const openBookNowPage = (service?: string, tier?: string, location?: string) => {
     if (service) setPreselectedService(service);
@@ -188,6 +281,11 @@ export default function App() {
     serviceFilter === 'all'
       ? SERVICES_LIST
       : SERVICES_LIST.filter((s) => s.category === serviceFilter);
+
+  const filteredProperties =
+    propertyFilter === 'all'
+      ? FEATURED_PROPERTIES
+      : FEATURED_PROPERTIES.filter((p) => p.category === propertyFilter);
 
   const currentTestimonial = PLACEHOLDER_TESTIMONIALS[testimonialIndex];
 
@@ -260,119 +358,211 @@ export default function App() {
             {/* 4. HERO SECTION */}
             <section
               aria-label="Hero Introduction"
-              className="relative min-h-[92vh] flex items-center pt-24 pb-16 overflow-hidden bg-[var(--brand-primary)]"
+              className="relative min-h-[92vh] flex items-center pt-28 pb-16 overflow-hidden bg-[var(--brand-primary)]"
             >
-              {/* Full-width High-Resolution Architectural Photograph */}
+              {/* Full-width High-Resolution Photograph of an Immaculate Luxury Residence */}
               <div className="absolute inset-0 z-0">
-                <motion.div
-                  initial={{ scale: 1.03, opacity: 0.85 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-                  className="w-full h-full"
-                >
-                  <ResilientImage
-                    src={BRAND_IMAGES.heroPenthouse}
-                    alt="Sunlit luxury California penthouse living room with floor-to-ceiling windows, honed marble fireplace, and wide-plank oak flooring"
-                    loading="eager"
-                    className="w-full h-full object-cover object-center"
-                  />
-                </motion.div>
+                <ResilientImage
+                  src={BRAND_IMAGES.heroPenthouse}
+                  alt="Immaculate sunlit California luxury residence with floor-to-ceiling windows, honed marble, and wide-plank oak flooring"
+                  loading="eager"
+                  className="w-full h-full object-cover object-center"
+                />
                 {/* Measured Scrim Overlay for WCAG AA Contrast */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[var(--brand-primary)]/92 via-[var(--brand-primary)]/75 to-[var(--brand-primary)]/35" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[var(--brand-primary)]/88 via-transparent to-[var(--brand-ink)]/35" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[var(--brand-primary)]/95 via-[var(--brand-primary)]/82 to-[var(--brand-primary)]/45" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--brand-primary)]/90 via-transparent to-[var(--brand-ink)]/35" />
               </div>
 
               <div className="relative z-10 max-w-[1360px] mx-auto px-6 md:px-10 w-full">
-                <div className="max-w-3xl">
-                  {/* Quiet Unboxed Eyebrow */}
-                  <motion.p
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-xs sm:text-sm font-medium tracking-[0.18em] text-[var(--brand-accent)] mb-5"
-                  >
-                    Premium Residential & Commercial Cleaning · California
-                  </motion.p>
-
-                  {/* Main Editorial Headline */}
-                  <motion.h1
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.65, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-                    className="font-serif-display text-4xl sm:text-6xl lg:text-[64px] font-normal text-[var(--brand-canvas)] leading-[1.06] tracking-wide"
-                  >
-                    Luxury Begins With a Space That Feels Perfect.
-                  </motion.h1>
-
-                  {/* Supporting Copy */}
-                  <motion.p
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.65, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
-                    className="mt-6 text-base sm:text-lg text-[var(--brand-canvas)]/90 leading-relaxed max-w-2xl"
-                  >
-                    Exceptional cleaning for exceptional spaces. Experience meticulous attention to
-                    detail, personalized service, and standards designed around your lifestyle.
-                  </motion.p>
-
-                  {/* Primary & Secondary CTAs */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.65, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
-                    className="mt-9 flex flex-wrap items-center gap-4"
-                  >
-                    <button
-                      type="button"
-                      onClick={() => openBookNowPage()}
-                      className="px-7 py-4 bg-[var(--brand-accent)] text-[var(--brand-ink)] text-xs font-semibold tracking-[0.14em] rounded hover:bg-[var(--brand-accent-hover)] transition-colors flex items-center gap-2.5 cursor-pointer whitespace-nowrap shrink-0"
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+                  {/* Left 7 Columns: Editorial Headline & CTAs */}
+                  <div className="lg:col-span-7">
+                    {/* Quiet Unboxed Eyebrow */}
+                    <motion.p
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                      className="text-xs sm:text-sm font-medium tracking-[0.18em] text-[var(--brand-accent)] mb-5"
                     >
-                      <span>Book Your Cleaning</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
+                      Premium Residential & Commercial Cleaning Agency · California
+                    </motion.p>
 
-                    <a
-                      href="#services"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigateToHomeSection('services');
-                      }}
-                      className="px-7 py-4 bg-transparent border border-[var(--brand-canvas)]/40 text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.14em] rounded hover:border-[var(--brand-canvas)] hover:bg-[var(--brand-canvas)]/10 transition-colors whitespace-nowrap shrink-0"
+                    {/* Main Editorial Headline */}
+                    <motion.h1
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.65, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+                      className="font-serif-display text-4xl sm:text-6xl lg:text-[60px] font-normal text-[var(--brand-canvas)] leading-[1.06] tracking-wide"
                     >
-                      Explore Our Services
-                    </a>
-                  </motion.div>
+                      Luxury Begins With a Space That Feels Perfect.
+                    </motion.h1>
 
-                  {/* Three Compact Trust Indicators */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.7, delay: 0.34 }}
-                    className="mt-10 pt-6 border-t border-[var(--brand-canvas)]/20 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs sm:text-sm text-[var(--brand-surface)]/90"
-                  >
-                    <span>Meticulous Attention to Detail</span>
-                    <span aria-hidden="true" className="text-[var(--brand-accent)]">
-                      ·
-                    </span>
-                    <span>Tailored Cleaning Plans</span>
-                    <span aria-hidden="true" className="text-[var(--brand-accent)]">
-                      ·
-                    </span>
-                    <span>Professional Service Across California</span>
-                  </motion.div>
+                    {/* Supporting Copy */}
+                    <motion.p
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.65, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
+                      className="mt-6 text-base sm:text-lg text-[var(--brand-canvas)]/90 leading-relaxed max-w-2xl"
+                    >
+                      Exceptional cleaning for exceptional spaces. Experience meticulous attention
+                      to detail, uniformed specialist teams, bespoke surface tools, and standards
+                      designed around your lifestyle.
+                    </motion.p>
+
+                    {/* Primary & Secondary CTAs */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.65, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
+                      className="mt-9 flex flex-wrap items-center gap-4"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => openBookNowPage()}
+                        className="px-7 py-4 bg-[var(--brand-accent)] text-[var(--brand-ink)] text-xs font-semibold tracking-[0.14em] rounded hover:bg-[var(--brand-accent-hover)] transition-colors flex items-center gap-2.5 cursor-pointer whitespace-nowrap shrink-0"
+                      >
+                        <span>Book Your Cleaning</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+
+                      <a
+                        href="#about"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigateToHomeSection('about');
+                        }}
+                        className="px-7 py-4 bg-transparent border border-[var(--brand-canvas)]/40 text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.14em] rounded hover:border-[var(--brand-canvas)] hover:bg-[var(--brand-canvas)]/10 transition-colors whitespace-nowrap shrink-0"
+                      >
+                        Our Team & Tools Lookbook
+                      </a>
+
+                      <a
+                        href={BUSINESS_CONTACT_PLACEHOLDERS.mailtoHref}
+                        className="px-5 py-4 bg-[var(--brand-canvas)]/10 border border-[var(--brand-canvas)]/30 text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded hover:border-[var(--brand-accent)] hover:text-[var(--brand-accent)] transition-colors inline-flex items-center gap-2 whitespace-nowrap shrink-0"
+                      >
+                        <Mail className="w-4 h-4 text-[var(--brand-accent)]" />
+                        <span>Email Us</span>
+                      </a>
+
+                      <a
+                        href={BUSINESS_CONTACT_PLACEHOLDERS.instagramUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-5 py-4 bg-[var(--brand-canvas)]/10 border border-[var(--brand-canvas)]/30 text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded hover:border-[var(--brand-accent)] hover:text-[var(--brand-accent)] transition-colors inline-flex items-center gap-2 whitespace-nowrap shrink-0"
+                      >
+                        <Instagram className="w-4 h-4 text-[var(--brand-accent)]" />
+                        <span>Connect on Instagram</span>
+                      </a>
+                    </motion.div>
+
+                    {/* Three Compact Trust Indicators */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.7, delay: 0.34 }}
+                      className="mt-10 pt-6 border-t border-[var(--brand-canvas)]/20 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs sm:text-sm text-[var(--brand-surface)]/90"
+                    >
+                      <span>Uniformed Specialist Teams</span>
+                      <span aria-hidden="true" className="text-[var(--brand-accent)]">
+                        ·
+                      </span>
+                      <span>HEPA H14 & Bespoke Surface Tools</span>
+                      <span aria-hidden="true" className="text-[var(--brand-accent)]">
+                        ·
+                      </span>
+                      <span>Serving California Estates & Offices</span>
+                    </motion.div>
+                  </div>
+
+                  {/* Right 5 Columns: Crisp Unobstructed Agency Team, Dress Shoot & Tools Showcase Card */}
+                  <div className="lg:col-span-5">
+                    <div className="bg-[var(--brand-canvas)] text-[var(--brand-ink)] rounded-lg border border-[var(--brand-accent)]/40 overflow-hidden shadow-2xl">
+                      {/* Segmented Switcher Tabs */}
+                      <div
+                        role="tablist"
+                        aria-label="Preview our cleaning team, uniform dress shoot, and tools"
+                        className="grid grid-cols-4 gap-1 p-1.5 bg-[var(--brand-surface)] border-b border-[var(--brand-ink)]/10"
+                      >
+                        {heroShowcases.map((slide, idx) => {
+                          const isSelected = idx === heroSlideIndex;
+                          return (
+                            <button
+                              key={slide.id}
+                              role="tab"
+                              aria-selected={isSelected}
+                              type="button"
+                              onClick={() => setHeroSlideIndex(idx)}
+                              className={`py-2 px-2 text-[11px] font-semibold rounded transition-colors cursor-pointer whitespace-nowrap truncate ${
+                                isSelected
+                                  ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)]'
+                                  : 'text-[var(--brand-ink)]/75 hover:text-[var(--brand-ink)]'
+                              }`}
+                            >
+                              {slide.tabLabel}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Un-darkened High-Clarity Photo Viewport */}
+                      <div className="relative aspect-[4/3] bg-[var(--brand-ink)] overflow-hidden">
+                        <ResilientImage
+                          src={activeHeroShowcase.image}
+                          alt={activeHeroShowcase.caption}
+                          loading="eager"
+                          className="w-full h-full object-cover object-center"
+                        />
+                      </div>
+
+                      {/* Caption & Quick Link to Full 8-Photo Lookbook */}
+                      <div className="p-5 bg-[var(--brand-canvas)]">
+                        <p className="text-[11px] font-mono-tabular text-[var(--brand-primary)]">
+                          0{heroSlideIndex + 1} / 0{heroShowcases.length} · {activeHeroShowcase.kicker}
+                        </p>
+                        <h2 className="font-serif-display text-xl font-semibold text-[var(--brand-ink)] mt-0.5">
+                          {activeHeroShowcase.title}
+                        </h2>
+                        <p className="text-xs text-[var(--brand-ink)]/75 mt-1.5 leading-relaxed">
+                          {activeHeroShowcase.caption}
+                        </p>
+                        <div className="mt-4 pt-3 border-t border-[var(--brand-ink)]/10 flex items-center justify-between gap-2">
+                          <a
+                            href="#about"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigateToHomeSection('about');
+                            }}
+                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--brand-primary)] hover:text-[var(--brand-ink)] transition-colors whitespace-nowrap shrink-0"
+                          >
+                            <span>View Team Group Photo & Tools</span>
+                            <ArrowDown className="w-3.5 h-3.5 text-[var(--brand-accent)]" />
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setHeroSlideIndex((prev) => (prev + 1) % heroShowcases.length)
+                            }
+                            className="text-xs font-medium text-[var(--brand-ink)]/70 hover:text-[var(--brand-primary)] underline underline-offset-4 cursor-pointer whitespace-nowrap shrink-0"
+                          >
+                            Next Photo
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Subtle Scroll Indicator & Interactive Color Palette Bar */}
-                <div className="mt-12 md:mt-16 flex flex-wrap items-center justify-between gap-4 text-xs text-[var(--brand-surface)]/75">
+                <div className="mt-10 md:mt-12 flex flex-wrap items-center justify-between gap-4 text-xs text-[var(--brand-surface)]/75">
                   <a
-                    href="#credibility-strip"
+                    href="#about"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigateToHomeSection('credibility-strip');
+                      navigateToHomeSection('about');
                     }}
                     className="inline-flex items-center gap-2 hover:text-[var(--brand-canvas)] transition-colors"
                   >
-                    <span>Discover The Aurel Standard</span>
+                    <span>Explore About Us, Uniform Dress Shoot & Tools Below</span>
                     <ArrowDown className="w-3.5 h-3.5 text-[var(--brand-accent)]" />
                   </a>
 
@@ -433,7 +623,254 @@ export default function App() {
               </div>
             </section>
 
-            {/* 6. SERVICES SECTION */}
+            {/* 6. ABOUT US: SINGLE TEAM GROUP PHOTO, UNIFORM STANDARD & PROFESSIONAL CLEANING TOOLS */}
+            <section
+              id="about"
+              aria-labelledby="about-agency-heading"
+              className="py-24 md:py-32 bg-[var(--brand-canvas)] border-b border-[var(--brand-ink)]/10"
+            >
+              <div className="max-w-[1360px] mx-auto px-6 md:px-10">
+                {/* Editorial Section Header + Interactive Lookbook Filter */}
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-14">
+                  <div className="max-w-2xl">
+                    <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)] mb-3">
+                      About Our Agency · Our Team & Surface-Care Tools
+                    </p>
+                    <h2
+                      id="about-agency-heading"
+                      className="font-serif-display text-3xl sm:text-5xl font-normal text-[var(--brand-ink)] leading-[1.1]"
+                    >
+                      Dressed for Discretion. Equipped for Precision.
+                    </h2>
+                    <p className="mt-4 text-base text-[var(--brand-ink)]/80 leading-relaxed">
+                      Aurel Cleaning Co. operates with the poise of a private hospitality team. Meet
+                      our coordinated California specialist team in a single group portrait and
+                      explore the professional HEPA H14 and surface-care equipment we bring to every
+                      property.
+                    </p>
+                  </div>
+
+                  {/* Interactive Filter Tabs for the Consolidated 3-Item Agency Lookbook */}
+                  <div
+                    role="tablist"
+                    aria-label="Filter agency team group photo and equipment kits"
+                    className="flex flex-wrap items-center gap-1.5 p-1.5 bg-[var(--brand-surface)] border border-[var(--brand-ink)]/10 rounded-lg self-start"
+                  >
+                    {[
+                      { id: 'all', label: 'All (3)' },
+                      { id: 'team-dress', label: 'Team Group Photo (1)' },
+                      { id: 'tools-kit', label: 'Cleaning Tools & HEPA (2)' },
+                    ].map((tab) => {
+                      const active = lookbookFilter === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          role="tab"
+                          aria-selected={active}
+                          type="button"
+                          onClick={() =>
+                            setLookbookFilter(tab.id as 'all' | 'team-dress' | 'tools-kit')
+                          }
+                          className={`px-3.5 py-2 text-xs font-medium rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                            active
+                              ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)]'
+                              : 'text-[var(--brand-ink)]/75 hover:text-[var(--brand-ink)]'
+                          }`}
+                        >
+                          {tab.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Consolidated 3-Card Agency Lookbook Grid: 1 Team Group Photo + 2 Equipment Kits */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-14">
+                  {filteredLookbookItems.map((item) => (
+                    <article
+                      key={item.id}
+                      className="group bg-[var(--brand-surface)]/55 border border-[var(--brand-ink)]/10 rounded-lg overflow-hidden flex flex-col justify-between transition-colors hover:border-[var(--brand-primary)]/40"
+                    >
+                      <div>
+                        <div className="aspect-[16/10] overflow-hidden bg-[var(--brand-ink)]">
+                          <ResilientImage
+                            src={item.image}
+                            alt={item.imageAlt}
+                            fallbackTitle={item.title}
+                            lazyObserver
+                            blurUp
+                            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                          />
+                        </div>
+                        <div className="p-6 md:p-7">
+                          <p className="text-[11px] font-mono-tabular text-[var(--brand-primary)]">
+                            {item.number} · {item.categoryLabel}
+                          </p>
+                          <h3 className="font-serif-display text-2xl font-semibold text-[var(--brand-ink)] mt-1">
+                            {item.title}
+                          </h3>
+                          <p className="mt-2.5 text-xs sm:text-sm text-[var(--brand-ink)]/80 leading-relaxed">
+                            {item.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="px-6 md:px-7 pb-6 pt-4 border-t border-[var(--brand-ink)]/10 flex flex-col justify-between gap-4">
+                        <ul className="space-y-1.5 text-xs text-[var(--brand-ink)]/75">
+                          {item.specs.map((spec, i) => (
+                            <li key={i} className="flex items-start gap-2">
+                              <span className="text-[var(--brand-accent)] font-mono-tabular">·</span>
+                              <span>{spec}</span>
+                            </li>
+                          ))}
+                        </ul>
+
+                        <button
+                          type="button"
+                          onClick={() => setActiveLookbookModal(item)}
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--brand-primary)] hover:text-[var(--brand-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0 self-start"
+                        >
+                          <span>Inspect Photo & Specs</span>
+                          <ArrowUpRight className="w-3.5 h-3.5 text-[var(--brand-accent)]" />
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+
+                {/* Unified Dress & Equipment Code Bar (Zero Extra Worker Photos) */}
+                <div className="bg-[var(--brand-surface)] border border-[var(--brand-ink)]/10 rounded-lg p-6 md:p-8 mb-20">
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div className="lg:col-span-4">
+                      <p className="text-xs font-mono-tabular text-[var(--brand-primary)]">
+                        The Aurel Dress & Equipment Standard
+                      </p>
+                      <h3 className="font-serif-display text-2xl sm:text-3xl font-medium text-[var(--brand-ink)] mt-1">
+                        Coordinated Presentation on Every Visit
+                      </h3>
+                      <p className="mt-2 text-xs sm:text-sm text-[var(--brand-ink)]/75 leading-relaxed">
+                        Every specialist in our group portrait follows a strict hospitality dress and
+                        equipment protocol designed for luxury interiors.
+                      </p>
+                    </div>
+
+                    <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                      <div className="flex items-start gap-2.5 text-xs text-[var(--brand-ink)]/85">
+                        <Check className="w-4 h-4 text-[var(--brand-primary)] shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-semibold text-[var(--brand-ink)]">
+                            Tailored Uniform & Apron
+                          </p>
+                          <p className="mt-1 text-[var(--brand-ink)]/75 leading-relaxed">
+                            Midnight-navy collared shirts and scratch-free slate linen aprons with no
+                            exposed metal hardware.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-2.5 text-xs text-[var(--brand-ink)]/85">
+                        <Check className="w-4 h-4 text-[var(--brand-primary)] shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-semibold text-[var(--brand-ink)]">
+                            Gloves & Indoor Footwear
+                          </p>
+                          <p className="mt-1 text-[var(--brand-ink)]/75 leading-relaxed">
+                            Surface-protective detailing gloves and dedicated non-marking indoor
+                            soft-sole shoes.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-2.5 text-xs text-[var(--brand-ink)]/85">
+                        <Check className="w-4 h-4 text-[var(--brand-primary)] shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-semibold text-[var(--brand-ink)]">
+                            HEPA H14 & Surface Caddies
+                          </p>
+                          <p className="mt-1 text-[var(--brand-ink)]/75 leading-relaxed">
+                            Whisper-quiet stainless HEPA vacuums, solid brass squeegees, and
+                            pH-neutral stone/wood sprays.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Why Choose Us Two-Column Split (Architectural Suite Photo — No Individual Workers) */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch pt-12 border-t border-[var(--brand-ink)]/10">
+                  {/* Left: Large Vertical Architectural Interior Photograph */}
+                  <div className="lg:col-span-5 flex flex-col">
+                    <div className="relative rounded-lg overflow-hidden border border-[var(--brand-ink)]/15 flex-1 min-h-[440px] bg-[var(--brand-ink)]">
+                      <ResilientImage
+                        src={BRAND_IMAGES.marbleSuite}
+                        alt="Spotless luxury master bathroom and dressing suite with bookmatched Calacatta marble vanity, frameless glass shower, and limestone floor"
+                        lazyObserver
+                        blurUp
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[var(--brand-ink)]/90 via-[var(--brand-ink)]/50 to-transparent p-6 text-[var(--brand-canvas)]">
+                        <p className="font-serif-display text-xl">
+                          Discreet Stewardship for Private & Commercial Properties
+                        </p>
+                        <p className="text-xs text-[var(--brand-surface)]/80 mt-1">
+                          Every surface treated according to its material composition.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Five Reasons to Choose Aurel Cleaning Co. */}
+                  <div className="lg:col-span-7 flex flex-col justify-between">
+                    <div>
+                      <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)] mb-3">
+                        Why Choose Aurel
+                      </p>
+                      <h3 className="font-serif-display text-3xl sm:text-5xl font-normal text-[var(--brand-ink)] leading-[1.1]">
+                        Considered Service. Impeccable Attention.
+                      </h3>
+                    </div>
+
+                    <div className="mt-8 divide-y divide-[var(--brand-ink)]/12 border-y border-[var(--brand-ink)]/12">
+                      {WHY_CHOOSE_REASONS.map((reason) => (
+                        <div
+                          key={reason.number}
+                          className="py-5 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 sm:gap-8"
+                        >
+                          <div className="flex items-baseline gap-3 sm:w-2/5 shrink-0">
+                            <span className="font-mono-tabular text-xs text-[var(--brand-primary)]">
+                              {reason.number}.
+                            </span>
+                            <h4 className="font-serif-display text-xl sm:text-2xl font-medium text-[var(--brand-ink)]">
+                              {reason.title}
+                            </h4>
+                          </div>
+                          <p className="text-sm sm:text-base text-[var(--brand-ink)]/80 leading-relaxed sm:w-3/5">
+                            {reason.description}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
+                      <p className="text-xs text-[var(--brand-ink)]/65">
+                        Custom protocols available for fine art residences, designer showrooms, and
+                        private estates.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => openBookNowPage()}
+                        className="px-5 py-3 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[var(--brand-primary-hover)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                      >
+                        Schedule a Consultation
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* 7. SERVICES SECTION */}
             <section
               id="services"
               aria-labelledby="services-heading"
@@ -510,6 +947,8 @@ export default function App() {
                             src={service.image}
                             alt={service.imageAlt}
                             fallbackTitle={service.title}
+                            lazyObserver
+                            blurUp
                             className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                           />
                         </div>
@@ -555,7 +994,177 @@ export default function App() {
               </div>
             </section>
 
-            {/* 7. SIGNATURE BRAND STATEMENT */}
+            {/* 7B. SIGNATURE CALIFORNIA PROPERTIES & ESTATES WE SERVE */}
+            <section
+              id="properties"
+              aria-labelledby="properties-heading"
+              className="py-24 md:py-32 bg-[var(--brand-surface)] border-y border-[var(--brand-ink)]/10"
+            >
+              <div className="max-w-[1360px] mx-auto px-6 md:px-10">
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-14">
+                  <div className="max-w-2xl">
+                    <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)] mb-3">
+                      California Portfolio · Properties We Care For
+                    </p>
+                    <h2
+                      id="properties-heading"
+                      className="font-serif-display text-3xl sm:text-5xl font-normal text-[var(--brand-ink)] leading-[1.1]"
+                    >
+                      Representative Estates, Penthouses & Studios.
+                    </h2>
+                    <p className="mt-4 text-base text-[var(--brand-ink)]/80 leading-relaxed">
+                      Explore how our uniformed teams and surface-specific equipment care for
+                      distinctive residential and commercial properties across Beverly Hills,
+                      Malibu, San Francisco, Montecito, and Bel Air.
+                    </p>
+                  </div>
+
+                  {/* Interactive Filter Bar for Properties */}
+                  <div
+                    role="tablist"
+                    aria-label="Filter California properties by architectural category"
+                    className="flex flex-wrap items-center gap-1.5 p-1.5 bg-[var(--brand-canvas)] border border-[var(--brand-ink)]/10 rounded-lg self-start"
+                  >
+                    {[
+                      { id: 'all', label: 'All Properties (6)' },
+                      { id: 'estate', label: 'Private Estates & Villas' },
+                      { id: 'coastal-penthouse', label: 'Coastal & Penthouses' },
+                      { id: 'commercial-studio', label: 'Commercial Studios' },
+                    ].map((tab) => {
+                      const active = propertyFilter === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          role="tab"
+                          aria-selected={active}
+                          type="button"
+                          onClick={() =>
+                            setPropertyFilter(
+                              tab.id as
+                                | 'all'
+                                | 'estate'
+                                | 'coastal-penthouse'
+                                | 'commercial-studio'
+                            )
+                          }
+                          className={`px-3.5 py-2 text-xs font-medium rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                            active
+                              ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)]'
+                              : 'text-[var(--brand-ink)]/75 hover:text-[var(--brand-ink)]'
+                          }`}
+                        >
+                          {tab.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Editorial Properties Grid with IntersectionObserver Lazy Loading & Blur-Up */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                  {filteredProperties.map((property) => (
+                    <article
+                      key={property.id}
+                      className={`${
+                        propertyFilter === 'all' ? property.colSpanClass : 'lg:col-span-6'
+                      } group bg-[var(--brand-canvas)] border border-[var(--brand-ink)]/10 rounded-lg overflow-hidden flex flex-col justify-between transition-colors hover:border-[var(--brand-primary)]/40`}
+                    >
+                      <div>
+                        <div className="relative aspect-[16/10] overflow-hidden bg-[var(--brand-ink)]">
+                          <ResilientImage
+                            src={property.image}
+                            alt={property.imageAlt}
+                            fallbackTitle={property.title}
+                            lazyObserver
+                            blurUp
+                            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                          />
+                        </div>
+
+                        <div className="p-7 md:p-8">
+                          {/* Quiet Unboxed Metadata */}
+                          <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--brand-primary)] font-mono-tabular mb-2">
+                            <span>{property.number}.</span>
+                            <span aria-hidden="true">·</span>
+                            <span className="font-sans font-semibold">{property.location}</span>
+                            <span aria-hidden="true">·</span>
+                            <span className="font-sans text-[var(--brand-ink)]/70">
+                              {property.dimensions}
+                            </span>
+                          </div>
+
+                          <h3 className="font-serif-display text-2xl sm:text-3xl font-medium text-[var(--brand-ink)]">
+                            {property.title}
+                          </h3>
+
+                          <p className="mt-3 text-sm sm:text-base text-[var(--brand-ink)]/80 leading-relaxed">
+                            {property.summary}
+                          </p>
+
+                          {/* Architectural Materials & Care Cadence */}
+                          <div className="mt-5 pt-5 border-t border-[var(--brand-ink)]/10 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                            <div>
+                              <p className="font-semibold text-[var(--brand-ink)] mb-1.5">
+                                Architectural Surfaces
+                              </p>
+                              <ul className="space-y-1 text-[var(--brand-ink)]/75">
+                                {property.architecturalMaterials.map((mat, i) => (
+                                  <li key={i} className="flex items-start gap-1.5">
+                                    <span className="text-[var(--brand-accent)]">·</span>
+                                    <span>{mat}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            <div>
+                              <p className="font-semibold text-[var(--brand-ink)] mb-1.5">
+                                Aurel Care Protocol
+                              </p>
+                              <ul className="space-y-1 text-[var(--brand-ink)]/75">
+                                {property.careProtocolHighlights.map((prot, i) => (
+                                  <li key={i} className="flex items-start gap-1.5">
+                                    <Check className="w-3.5 h-3.5 text-[var(--brand-primary)] shrink-0 mt-0.5" />
+                                    <span>{prot}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="px-7 md:px-8 pb-7 pt-4 border-t border-[var(--brand-ink)]/10 flex flex-wrap items-center justify-between gap-4">
+                        <button
+                          type="button"
+                          onClick={() => setActivePropertyModal(property)}
+                          className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.12em] text-[var(--brand-primary)] hover:text-[var(--brand-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                        >
+                          <span>Inspect Property Protocol</span>
+                          <ArrowUpRight className="w-4 h-4 text-[var(--brand-accent)]" />
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            openBookNowPage(
+                              property.recommendedService,
+                              property.recommendedTier,
+                              property.location
+                            )
+                          }
+                          className="text-xs font-medium text-[var(--brand-ink)]/70 hover:text-[var(--brand-primary)] underline underline-offset-4 cursor-pointer whitespace-nowrap shrink-0"
+                        >
+                          Book Similar Property Care
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* 8. SIGNATURE BRAND STATEMENT */}
             <section
               aria-labelledby="signature-statement-heading"
               className="py-24 md:py-32 bg-[var(--brand-primary)] text-[var(--brand-canvas)]"
@@ -591,10 +1200,10 @@ export default function App() {
                   </div>
 
                   <div className="lg:col-span-5">
-                    <div className="rounded-lg overflow-hidden border border-[var(--brand-accent)]/30 aspect-[4/3] bg-[var(--brand-ink)]">
+                    <div className="rounded-lg overflow-hidden border border-[var(--brand-accent)]/30 aspect-[16/10] bg-[var(--brand-ink)]">
                       <ResilientImage
-                        src={BRAND_IMAGES.residentialKitchen}
-                        alt="Immaculate luxury interior kitchen with natural light and honed stone countertops"
+                        src={BRAND_IMAGES.agencyEquipmentArsenal}
+                        alt="Complete professional cleaning agency equipment arsenal with stainless HEPA vacuum, walnut bottle caddy, brass squeegees, and horsehair brushes"
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -603,7 +1212,7 @@ export default function App() {
               </div>
             </section>
 
-            {/* 8. OUR APPROACH */}
+            {/* 9. OUR APPROACH */}
             <section
               id="approach"
               aria-labelledby="approach-heading"
@@ -644,86 +1253,6 @@ export default function App() {
                       </p>
                     </div>
                   ))}
-                </div>
-              </div>
-            </section>
-
-            {/* 9. WHY CHOOSE US */}
-            <section
-              id="about"
-              aria-labelledby="why-choose-heading"
-              className="py-24 md:py-32 bg-[var(--brand-canvas)]"
-            >
-              <div className="max-w-[1360px] mx-auto px-6 md:px-10">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
-                  {/* Left: Large Vertical Editorial Photograph */}
-                  <div className="lg:col-span-5 flex flex-col">
-                    <div className="relative rounded-lg overflow-hidden border border-[var(--brand-ink)]/15 flex-1 min-h-[440px] bg-[var(--brand-ink)]">
-                      <ResilientImage
-                        src={BRAND_IMAGES.specialistCare}
-                        alt="Professional luxury housekeeping specialist carefully detailing a honed marble console table"
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[var(--brand-ink)]/90 via-[var(--brand-ink)]/50 to-transparent p-6 text-[var(--brand-canvas)]">
-                        <p className="font-serif-display text-xl">
-                          Discreet Stewardship for Private & Commercial Properties
-                        </p>
-                        <p className="text-xs text-[var(--brand-surface)]/80 mt-1">
-                          Every surface treated according to its material composition.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right: Five Reasons to Choose Aurel Cleaning Co. */}
-                  <div className="lg:col-span-7 flex flex-col justify-between">
-                    <div>
-                      <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)] mb-3">
-                        Why Choose Aurel
-                      </p>
-                      <h2
-                        id="why-choose-heading"
-                        className="font-serif-display text-3xl sm:text-5xl font-normal text-[var(--brand-ink)] leading-[1.1]"
-                      >
-                        Considered Service. Impeccable Attention.
-                      </h2>
-                    </div>
-
-                    <div className="mt-8 divide-y divide-[var(--brand-ink)]/12 border-y border-[var(--brand-ink)]/12">
-                      {WHY_CHOOSE_REASONS.map((reason) => (
-                        <div
-                          key={reason.number}
-                          className="py-5 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 sm:gap-8"
-                        >
-                          <div className="flex items-baseline gap-3 sm:w-2/5 shrink-0">
-                            <span className="font-mono-tabular text-xs text-[var(--brand-primary)]">
-                              {reason.number}.
-                            </span>
-                            <h3 className="font-serif-display text-xl sm:text-2xl font-medium text-[var(--brand-ink)]">
-                              {reason.title}
-                            </h3>
-                          </div>
-                          <p className="text-sm sm:text-base text-[var(--brand-ink)]/80 leading-relaxed sm:w-3/5">
-                            {reason.description}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-                      <p className="text-xs text-[var(--brand-ink)]/65">
-                        Custom protocols available for fine art residences, designer showrooms, and
-                        private estates.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => openBookNowPage()}
-                        className="px-5 py-3 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[var(--brand-primary-hover)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
-                      >
-                        Schedule a Consultation
-                      </button>
-                    </div>
-                  </div>
                 </div>
               </div>
             </section>
@@ -1043,8 +1572,29 @@ export default function App() {
             <section
               id="faq"
               aria-labelledby="faq-heading"
+              itemScope
+              itemType="https://schema.org/FAQPage"
               className="py-24 md:py-32 bg-[var(--brand-canvas)]"
             >
+              {/* JSON-LD FAQPage Structured Data for Search Engine Visibility */}
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify({
+                    '@context': 'https://schema.org',
+                    '@type': 'FAQPage',
+                    mainEntity: FAQ_ITEMS.map((faq) => ({
+                      '@type': 'Question',
+                      name: faq.question,
+                      acceptedAnswer: {
+                        '@type': 'Answer',
+                        text: faq.answer,
+                      },
+                    })),
+                  }),
+                }}
+              />
+
               <div className="max-w-[1360px] mx-auto px-6 md:px-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                   <div className="lg:col-span-5">
@@ -1062,20 +1612,46 @@ export default function App() {
                       commercial scheduling in California? Reach out to our Client Concierge or
                       request a tailored quote.
                     </p>
-                    <button
-                      type="button"
-                      onClick={() => openBookNowPage()}
-                      className="mt-8 px-6 py-3.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[var(--brand-primary-hover)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
-                    >
-                      Request a Personalized Quote
-                    </button>
+                    <div className="mt-8 flex flex-wrap items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => openBookNowPage()}
+                        className="px-6 py-3.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[var(--brand-primary-hover)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                      >
+                        Request a Personalized Quote
+                      </button>
+
+                      <a
+                        href={BUSINESS_CONTACT_PLACEHOLDERS.mailtoHref}
+                        className="px-4 py-3.5 bg-[var(--brand-surface)] border border-[var(--brand-ink)]/15 text-[var(--brand-ink)] text-xs font-semibold tracking-[0.1em] rounded hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors inline-flex items-center gap-2 whitespace-nowrap shrink-0"
+                      >
+                        <Mail className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
+                        <span>Email Us</span>
+                      </a>
+
+                      <a
+                        href={BUSINESS_CONTACT_PLACEHOLDERS.instagramUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-3.5 bg-[var(--brand-surface)] border border-[var(--brand-ink)]/15 text-[var(--brand-ink)] text-xs font-semibold tracking-[0.1em] rounded hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors inline-flex items-center gap-2 whitespace-nowrap shrink-0"
+                      >
+                        <Instagram className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
+                        <span>Connect on Instagram</span>
+                      </a>
+                    </div>
                   </div>
 
                   <div className="lg:col-span-7 divide-y divide-[var(--brand-ink)]/12 border-y border-[var(--brand-ink)]/12">
                     {FAQ_ITEMS.map((faq) => {
                       const isOpen = openFaqId === faq.id;
                       return (
-                        <div key={faq.id} className="py-5">
+                        <div
+                          key={faq.id}
+                          itemScope
+                          itemProp="mainEntity"
+                          itemType="https://schema.org/Question"
+                          className="py-5"
+                        >
                           <h3>
                             <button
                               type="button"
@@ -1084,7 +1660,7 @@ export default function App() {
                               onClick={() => setOpenFaqId(isOpen ? '' : faq.id)}
                               className="w-full text-left flex items-center justify-between gap-4 font-serif-display text-xl sm:text-2xl font-medium text-[var(--brand-ink)] hover:text-[var(--brand-primary)] transition-colors cursor-pointer"
                             >
-                              <span>{faq.question}</span>
+                              <span itemProp="name">{faq.question}</span>
                               <ChevronDown
                                 className={`w-5 h-5 text-[var(--brand-primary)] shrink-0 transition-transform duration-200 ${
                                   isOpen ? 'rotate-180' : ''
@@ -1092,15 +1668,21 @@ export default function App() {
                               />
                             </button>
                           </h3>
-                          {isOpen && (
-                            <div
-                              id={`faq-panel-${faq.id}`}
-                              role="region"
-                              className="mt-3 pr-8 text-sm sm:text-base text-[var(--brand-ink)]/80 leading-relaxed"
-                            >
-                              {faq.answer}
-                            </div>
-                          )}
+                          <div
+                            id={`faq-panel-${faq.id}`}
+                            role="region"
+                            itemScope
+                            itemProp="acceptedAnswer"
+                            itemType="https://schema.org/Answer"
+                            hidden={!isOpen}
+                            className={
+                              isOpen
+                                ? 'mt-3 pr-8 text-sm sm:text-base text-[var(--brand-ink)]/80 leading-relaxed'
+                                : 'hidden'
+                            }
+                          >
+                            <p itemProp="text">{faq.answer}</p>
+                          </div>
                         </div>
                       );
                     })}
@@ -1116,8 +1698,8 @@ export default function App() {
             >
               <div className="absolute inset-0 z-0 opacity-25">
                 <ResilientImage
-                  src={BRAND_IMAGES.heroPenthouse}
-                  alt="Contemporary California luxury residence"
+                  src={BRAND_IMAGES.malibuOceanfront}
+                  alt="Spotless Malibu oceanfront luxury residence with frameless coastal windows"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-[var(--brand-primary)]/80" />
@@ -1146,14 +1728,20 @@ export default function App() {
                     Request Your Quote
                   </button>
                   <a
-                    href="#contact"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigateToHomeSection('contact');
-                    }}
-                    className="px-7 py-4 bg-transparent border border-[var(--brand-canvas)]/40 text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.14em] rounded hover:border-[var(--brand-canvas)] hover:bg-[var(--brand-canvas)]/10 transition-colors whitespace-nowrap shrink-0"
+                    href={BUSINESS_CONTACT_PLACEHOLDERS.mailtoHref}
+                    className="px-6 py-4 bg-transparent border border-[var(--brand-canvas)]/40 text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.14em] rounded hover:border-[var(--brand-canvas)] hover:bg-[var(--brand-canvas)]/10 transition-colors inline-flex items-center gap-2 whitespace-nowrap shrink-0"
                   >
-                    Contact Our Team
+                    <Mail className="w-4 h-4 text-[var(--brand-accent)]" />
+                    <span>Email Us</span>
+                  </a>
+                  <a
+                    href={BUSINESS_CONTACT_PLACEHOLDERS.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-6 py-4 bg-transparent border border-[var(--brand-canvas)]/40 text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.14em] rounded hover:border-[var(--brand-canvas)] hover:bg-[var(--brand-canvas)]/10 transition-colors inline-flex items-center gap-2 whitespace-nowrap shrink-0"
+                  >
+                    <Instagram className="w-4 h-4 text-[var(--brand-accent)]" />
+                    <span>Connect on Instagram</span>
                   </a>
                 </div>
               </div>
@@ -1270,7 +1858,7 @@ export default function App() {
                       }}
                       className="hover:text-[var(--brand-accent)] transition-colors"
                     >
-                      About Us
+                      About Us & Team
                     </a>
                   </li>
                   <li>
@@ -1329,13 +1917,27 @@ export default function App() {
                     <dt className="text-[var(--brand-surface)]/55">Direct Telephone</dt>
                     <dd className="mt-0.5">{BUSINESS_CONTACT_PLACEHOLDERS.phoneDisplay}</dd>
                   </div>
-                  <div className="pt-2">
-                    <span className="text-[11px] text-[var(--brand-surface)]/60">
-                      Social Profiles: [Instagram · Facebook · LinkedIn — Configure verified URLs in
-                      siteContent.ts]
-                    </span>
-                  </div>
                 </dl>
+
+                {/* Direct Email Us & Connect on Instagram Buttons in Footer */}
+                <div className="mt-5 pt-4 border-t border-[var(--brand-canvas)]/15 flex flex-col sm:flex-row lg:flex-col gap-2.5">
+                  <a
+                    href={BUSINESS_CONTACT_PLACEHOLDERS.mailtoHref}
+                    className="py-2.5 px-4 bg-[var(--brand-accent)] text-[var(--brand-ink)] text-xs font-semibold tracking-wider rounded hover:bg-[var(--brand-accent-hover)] transition-colors inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0"
+                  >
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>Email Us</span>
+                  </a>
+                  <a
+                    href={BUSINESS_CONTACT_PLACEHOLDERS.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-2.5 px-4 bg-[var(--brand-canvas)]/10 border border-[var(--brand-canvas)]/30 text-[var(--brand-canvas)] text-xs font-semibold tracking-wider rounded hover:border-[var(--brand-accent)] hover:text-[var(--brand-accent)] transition-colors inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0"
+                  >
+                    <Instagram className="w-3.5 h-3.5 text-[var(--brand-accent)]" />
+                    <span>Connect on Instagram</span>
+                  </a>
+                </div>
               </div>
 
               {/* Private Client Advisories / Mailing List */}
@@ -1396,6 +1998,190 @@ export default function App() {
             </div>
           </div>
         </footer>
+
+        {/* AGENCY LOOKBOOK PHOTO & EQUIPMENT SPECIFICATION MODAL */}
+        {activeLookbookModal && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="lookbook-modal-title"
+            className="fixed inset-0 z-50 bg-[var(--brand-ink)]/75 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6"
+          >
+            <div className="bg-[var(--brand-canvas)] text-[var(--brand-ink)] border border-[var(--brand-ink)]/20 rounded-lg max-w-2xl w-full overflow-hidden shadow-2xl">
+              <div className="relative aspect-[16/10] bg-[var(--brand-ink)]">
+                <ResilientImage
+                  src={activeLookbookModal.image}
+                  alt={activeLookbookModal.imageAlt}
+                  loading="eager"
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => setActiveLookbookModal(null)}
+                  aria-label="Close lookbook photo details"
+                  className="absolute top-4 right-4 z-20 p-2 bg-[var(--brand-ink)]/80 text-[var(--brand-canvas)] rounded-full hover:bg-[var(--brand-primary)] transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="p-6 sm:p-8">
+                <p className="text-xs font-mono-tabular text-[var(--brand-primary)]">
+                  Lookbook {activeLookbookModal.number} · {activeLookbookModal.categoryLabel}
+                </p>
+                <h3
+                  id="lookbook-modal-title"
+                  className="font-serif-display text-3xl font-medium text-[var(--brand-ink)] mt-1"
+                >
+                  {activeLookbookModal.title}
+                </h3>
+                <p className="mt-2 text-sm text-[var(--brand-ink)]/80 leading-relaxed">
+                  {activeLookbookModal.description}
+                </p>
+
+                <div className="mt-6 pt-5 border-t border-[var(--brand-ink)]/10">
+                  <h4 className="text-xs font-semibold tracking-wider text-[var(--brand-primary)] mb-3">
+                    Agency Uniform & Equipment Standards
+                  </h4>
+                  <ul className="space-y-2 text-xs sm:text-sm text-[var(--brand-ink)]/85">
+                    {activeLookbookModal.specs.map((spec, idx) => (
+                      <li key={idx} className="flex items-start gap-2.5">
+                        <Check className="w-4 h-4 text-[var(--brand-primary)] shrink-0 mt-0.5" />
+                        <span>{spec}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mt-7 flex flex-wrap items-center justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setActiveLookbookModal(null)}
+                    className="px-4 py-2.5 border border-[var(--brand-ink)]/25 text-xs font-medium rounded hover:border-[var(--brand-ink)] cursor-pointer"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveLookbookModal(null);
+                      openBookNowPage();
+                    }}
+                    className="px-6 py-2.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-wider rounded hover:bg-[var(--brand-primary-hover)] cursor-pointer"
+                  >
+                    Book Our Uniformed Team
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* PROPERTY CARE PROTOCOL MODAL */}
+        {activePropertyModal && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="property-modal-title"
+            className="fixed inset-0 z-50 bg-[var(--brand-ink)]/75 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6"
+          >
+            <div className="bg-[var(--brand-canvas)] text-[var(--brand-ink)] border border-[var(--brand-ink)]/20 rounded-lg max-w-2xl w-full overflow-hidden shadow-2xl">
+              <div className="relative h-56 bg-[var(--brand-ink)]">
+                <ResilientImage
+                  src={activePropertyModal.image}
+                  alt={activePropertyModal.imageAlt}
+                  loading="eager"
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => setActivePropertyModal(null)}
+                  aria-label="Close property protocol details"
+                  className="absolute top-4 right-4 z-20 p-2 bg-[var(--brand-ink)]/80 text-[var(--brand-canvas)] rounded-full hover:bg-[var(--brand-primary)] transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="p-6 sm:p-8">
+                <div className="flex flex-wrap items-center gap-2 text-xs font-mono-tabular text-[var(--brand-primary)]">
+                  <span>Property {activePropertyModal.number}</span>
+                  <span aria-hidden="true">·</span>
+                  <span className="font-sans font-semibold">{activePropertyModal.location}</span>
+                  <span aria-hidden="true">·</span>
+                  <span className="font-sans text-[var(--brand-ink)]/70">
+                    {activePropertyModal.dimensions}
+                  </span>
+                </div>
+
+                <h3
+                  id="property-modal-title"
+                  className="font-serif-display text-3xl font-medium text-[var(--brand-ink)] mt-1"
+                >
+                  {activePropertyModal.title}
+                </h3>
+                <p className="mt-2 text-sm text-[var(--brand-ink)]/80 leading-relaxed">
+                  {activePropertyModal.summary}
+                </p>
+
+                <div className="mt-6 pt-5 border-t border-[var(--brand-ink)]/10 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="text-xs font-semibold tracking-wider text-[var(--brand-primary)] mb-2.5">
+                      Architectural Surfaces Treated
+                    </h4>
+                    <ul className="space-y-2 text-xs text-[var(--brand-ink)]/85">
+                      {activePropertyModal.architecturalMaterials.map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <span className="text-[var(--brand-accent)] font-mono-tabular">·</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xs font-semibold tracking-wider text-[var(--brand-primary)] mb-2.5">
+                      Assigned Care Protocol ({activePropertyModal.cadence})
+                    </h4>
+                    <ul className="space-y-2 text-xs text-[var(--brand-ink)]/85">
+                      {activePropertyModal.careProtocolHighlights.map((item, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <Check className="w-4 h-4 text-[var(--brand-primary)] shrink-0 mt-0.5" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-7 flex flex-wrap items-center justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setActivePropertyModal(null)}
+                    className="px-4 py-2.5 border border-[var(--brand-ink)]/25 text-xs font-medium rounded hover:border-[var(--brand-ink)] cursor-pointer"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const prop = activePropertyModal;
+                      setActivePropertyModal(null);
+                      openBookNowPage(
+                        prop.recommendedService,
+                        prop.recommendedTier,
+                        prop.location
+                      );
+                    }}
+                    className="px-6 py-2.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-wider rounded hover:bg-[var(--brand-primary-hover)] cursor-pointer"
+                  >
+                    Request Quote for Similar Property
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* SERVICE SPECIFICATION MODAL */}
         {activeServiceModal && (
@@ -1565,7 +2351,7 @@ export default function App() {
           </div>
         )}
 
-        {/* LIVE CONCIERGE CHAT INTEGRATION */}
+        {/* LIVE CONCIGE CHAT INTEGRATION */}
         <LiveConciergeChat
           onOpenBookPage={() => openBookNowPage()}
           onNavigateSection={navigateToHomeSection}

@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, Clock, MapPin, Shield } from 'lucide-react';
+import { ArrowLeft, Clock, Instagram, Mail, MapPin, Shield } from 'lucide-react';
 import {
   QuoteBookingEngine,
   SubmittedQuoteRecord,
 } from './QuoteBookingEngine';
 import { CaliforniaServiceMap } from './CaliforniaServiceMap';
-import { SERVICE_PLAN_TIERS } from '../data/siteContent';
+import {
+  BRAND_IMAGES,
+  BUSINESS_CONTACT_PLACEHOLDERS,
+  SERVICE_PLAN_TIERS,
+} from '../data/siteContent';
+import { ResilientImage } from './ResilientImage';
 
 interface BookNowPageProps {
   initialService?: string;
@@ -104,8 +109,48 @@ export const BookNowPage: React.FC<BookNowPageProps> = ({
               />
             </div>
 
-            {/* Right 4 Columns: Care Plan Guide & Concierge Process */}
+            {/* Right 4 Columns: Team & Equipment Assurance + Care Plan Guide */}
             <aside className="lg:col-span-4 space-y-6">
+              {/* Visual Agency Team & Equipment Card */}
+              <div className="bg-[var(--brand-surface)] border border-[var(--brand-ink)]/10 rounded-lg overflow-hidden">
+                <div className="aspect-[16/10] bg-[var(--brand-ink)]">
+                  <ResilientImage
+                    src={BRAND_IMAGES.teamUniformPhotoshoot}
+                    alt="Aurel Cleaning Co. uniformed California specialist team with wooden cleaning caddies"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-6">
+                  <p className="text-xs font-mono-tabular text-[var(--brand-primary)]">
+                    Uniformed Teams · Bespoke Equipment
+                  </p>
+                  <h2 className="font-serif-display text-2xl font-medium text-[var(--brand-ink)] mt-1">
+                    Who Arrives at Your Property
+                  </h2>
+                  <p className="text-xs text-[var(--brand-ink)]/75 mt-2 leading-relaxed">
+                    Every scheduled appointment includes our uniformed specialists in tailored
+                    navy-and-slate attire, indoor soft-sole shoes, protective gloves, pH-neutral
+                    stone/wood formulations, and HEPA H14 filtration systems.
+                  </p>
+                  <div className="mt-4 grid grid-cols-2 gap-3 pt-4 border-t border-[var(--brand-ink)]/10">
+                    <div className="rounded overflow-hidden border border-[var(--brand-ink)]/10 aspect-[4/3] bg-[var(--brand-ink)]">
+                      <ResilientImage
+                        src={BRAND_IMAGES.cleaningToolsKit}
+                        alt="Hand-carried detailing caddy with amber glass pH-neutral sprays, horsehair brushes, and rolled microfiber cloths"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="rounded overflow-hidden border border-[var(--brand-ink)]/10 aspect-[4/3] bg-[var(--brand-ink)]">
+                      <ResilientImage
+                        src={BRAND_IMAGES.agencyEquipmentArsenal}
+                        alt="Complete professional cleaning kit with stainless HEPA vacuum, brass squeegees, and microfiber stacks"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="bg-[var(--brand-surface)] border border-[var(--brand-ink)]/10 rounded-lg p-6 md:p-7">
                 <p className="text-xs font-semibold tracking-[0.14em] text-[var(--brand-primary)] mb-2">
                   Service Plan Categories
@@ -183,6 +228,26 @@ export const BookNowPage: React.FC<BookNowPageProps> = ({
                     <Shield className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />
                     <span>Respectful Care for Fine Stone, Wood & Architectural Glass</span>
                   </div>
+                </div>
+
+                {/* Direct Email Us & Connect on Instagram Concierge Actions */}
+                <div className="mt-6 pt-5 border-t border-[var(--brand-ink)]/10 flex flex-col sm:flex-row gap-3">
+                  <a
+                    href={BUSINESS_CONTACT_PLACEHOLDERS.mailtoHref}
+                    className="flex-1 py-2.5 px-4 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-wider rounded hover:bg-[var(--brand-primary-hover)] transition-colors inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0"
+                  >
+                    <Mail className="w-3.5 h-3.5 text-[var(--brand-accent)]" />
+                    <span>Email Us</span>
+                  </a>
+                  <a
+                    href={BUSINESS_CONTACT_PLACEHOLDERS.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-2.5 px-4 bg-[var(--brand-surface)] border border-[var(--brand-ink)]/20 text-[var(--brand-ink)] text-xs font-semibold tracking-wider rounded hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0"
+                  >
+                    <Instagram className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
+                    <span>Connect on Instagram</span>
+                  </a>
                 </div>
               </div>
 

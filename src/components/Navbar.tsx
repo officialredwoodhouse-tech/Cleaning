@@ -60,15 +60,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="hidden lg:flex items-center gap-8 text-sm font-medium"
         >
           <a
-            href="#top"
-            onClick={(e) => handleNavClick(e, 'top')}
-            className={`whitespace-nowrap shrink-0 py-1 border-b-2 transition-colors duration-150 ${
-              activePage === 'home'
-                ? 'border-[var(--brand-accent)]'
-                : 'border-transparent hover:border-[var(--brand-accent)]/60'
-            }`}
+            href="#about"
+            onClick={(e) => handleNavClick(e, 'about')}
+            className="whitespace-nowrap shrink-0 py-1 border-b-2 border-transparent hover:border-[var(--brand-accent)] transition-colors duration-150"
           >
-            Home
+            About & Team
           </a>
           <a
             href="#services"
@@ -78,11 +74,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             Services
           </a>
           <a
-            href="#approach"
-            onClick={(e) => handleNavClick(e, 'approach')}
+            href="#properties"
+            onClick={(e) => handleNavClick(e, 'properties')}
             className="whitespace-nowrap shrink-0 py-1 border-b-2 border-transparent hover:border-[var(--brand-accent)] transition-colors duration-150"
           >
-            Our Approach
+            Properties
           </a>
           <a
             href="#california-map"
@@ -150,6 +146,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="py-2 border-b border-[var(--brand-ink)]/10 flex items-center justify-between"
             >
               <span>Services</span>
+            </a>
+            <a
+              href="#properties"
+              onClick={(e) => handleNavClick(e, 'properties')}
+              className="py-2 border-b border-[var(--brand-ink)]/10 flex items-center justify-between"
+            >
+              <span>Properties We Serve</span>
             </a>
             <a
               href="#approach"
