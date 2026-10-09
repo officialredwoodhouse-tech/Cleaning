@@ -98,24 +98,24 @@ export const LiveConciergeChat: React.FC<LiveConciergeChatProps> = ({
           type="button"
           onClick={() => setIsOpen(true)}
           aria-label="Open California Client Concierge Chat"
-          className="px-4 py-3 bg-[#153D32] text-[#F7F5F0] border border-[#C6A66B]/40 rounded-lg shadow-lg hover:bg-[#102E26] transition-colors flex items-center gap-2.5 cursor-pointer whitespace-nowrap shrink-0"
+          className="px-4 py-3 bg-[var(--brand-primary)] text-[var(--brand-canvas)] border border-[var(--brand-accent)]/40 rounded-lg shadow-lg hover:bg-[var(--brand-primary-hover)] transition-colors flex items-center gap-2.5 cursor-pointer whitespace-nowrap shrink-0"
         >
-          <MessageSquare className="w-4 h-4 text-[#C6A66B]" />
+          <MessageSquare className="w-4 h-4 text-[var(--brand-accent)]" />
           <span className="text-xs font-semibold tracking-[0.1em]">Client Concierge</span>
         </button>
       ) : (
         <div
           role="dialog"
           aria-label="Aurel California Client Concierge Desk"
-          className="w-[340px] sm:w-[380px] bg-[#F7F5F0] border border-[#202421]/20 rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[540px]"
+          className="w-[340px] sm:w-[380px] bg-[var(--brand-canvas)] border border-[var(--brand-ink)]/20 rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[540px]"
         >
           {/* Header */}
-          <div className="bg-[#153D32] text-[#F7F5F0] px-5 py-4 flex items-center justify-between gap-3 border-b border-[#C6A66B]/25">
+          <div className="bg-[var(--brand-primary)] text-[var(--brand-canvas)] px-5 py-4 flex items-center justify-between gap-3 border-b border-[var(--brand-accent)]/25">
             <div>
-              <p className="font-serif-display text-lg font-medium tracking-wide text-[#F7F5F0]">
+              <p className="font-serif-display text-lg font-medium tracking-wide text-[var(--brand-canvas)]">
                 Aurel Client Concierge
               </p>
-              <p className="text-[11px] text-[#E9E6DF]/75">
+              <p className="text-[11px] text-[var(--brand-surface)]/75">
                 California Residential & Commercial Desk
               </p>
             </div>
@@ -123,14 +123,14 @@ export const LiveConciergeChat: React.FC<LiveConciergeChatProps> = ({
               type="button"
               onClick={() => setIsOpen(false)}
               aria-label="Close Concierge Chat"
-              className="p-1.5 text-[#E9E6DF]/80 hover:text-[#F7F5F0] rounded cursor-pointer"
+              className="p-1.5 text-[var(--brand-surface)]/80 hover:text-[var(--brand-canvas)] rounded cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
           {/* Messages Body */}
-          <div className="p-4 space-y-3.5 overflow-y-auto flex-1 max-h-[310px] bg-[#F7F5F0]">
+          <div className="p-4 space-y-3.5 overflow-y-auto flex-1 max-h-[310px] bg-[var(--brand-canvas)]">
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -141,8 +141,8 @@ export const LiveConciergeChat: React.FC<LiveConciergeChatProps> = ({
                 <div
                   className={`max-w-[88%] px-3.5 py-2.5 rounded-lg text-xs leading-relaxed ${
                     msg.sender === 'client'
-                      ? 'bg-[#153D32] text-[#F7F5F0]'
-                      : 'bg-white border border-[#202421]/10 text-[#202421]'
+                      ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)]'
+                      : 'bg-white border border-[var(--brand-ink)]/10 text-[var(--brand-ink)]'
                   }`}
                 >
                   <p>{msg.text}</p>
@@ -154,7 +154,7 @@ export const LiveConciergeChat: React.FC<LiveConciergeChatProps> = ({
                         setIsOpen(false);
                         onOpenBookPage();
                       }}
-                      className="mt-2.5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#153D32] hover:underline cursor-pointer"
+                      className="mt-2.5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-[var(--brand-primary)] hover:underline cursor-pointer"
                     >
                       <span>Open Book Now Page</span>
                       <ArrowRight className="w-3 h-3" />
@@ -168,26 +168,28 @@ export const LiveConciergeChat: React.FC<LiveConciergeChatProps> = ({
                         setIsOpen(false);
                         onNavigateSection('california-map');
                       }}
-                      className="mt-2.5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#153D32] hover:underline cursor-pointer"
+                      className="mt-2.5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-[var(--brand-primary)] hover:underline cursor-pointer"
                     >
                       <span>Explore California Map</span>
                       <ArrowRight className="w-3 h-3" />
                     </button>
                   )}
                 </div>
-                <span className="text-[10px] text-[#202421]/50 mt-1 px-1">{msg.timestamp}</span>
+                <span className="text-[10px] text-[var(--brand-ink)]/50 mt-1 px-1">
+                  {msg.timestamp}
+                </span>
               </div>
             ))}
           </div>
 
           {/* Quick Inquiry Prompts */}
-          <div className="px-4 py-2.5 bg-[#E9E6DF]/70 border-t border-[#202421]/10 flex items-center gap-1.5 overflow-x-auto">
+          <div className="px-4 py-2.5 bg-[var(--brand-surface)]/70 border-t border-[var(--brand-ink)]/10 flex items-center gap-1.5 overflow-x-auto">
             {QUICK_PROMPTS.map((prompt) => (
               <button
                 key={prompt}
                 type="button"
                 onClick={() => void sendMessage(prompt)}
-                className="px-2.5 py-1 bg-white border border-[#202421]/15 rounded text-[11px] text-[#202421] hover:border-[#153D32] whitespace-nowrap shrink-0 cursor-pointer"
+                className="px-2.5 py-1 bg-white border border-[var(--brand-ink)]/15 rounded text-[11px] text-[var(--brand-ink)] hover:border-[var(--brand-primary)] whitespace-nowrap shrink-0 cursor-pointer"
               >
                 {prompt}
               </button>
@@ -197,7 +199,7 @@ export const LiveConciergeChat: React.FC<LiveConciergeChatProps> = ({
           {/* Input Form */}
           <form
             onSubmit={handleFormSubmit}
-            className="p-3 bg-white border-t border-[#202421]/10 flex items-center gap-2"
+            className="p-3 bg-white border-t border-[var(--brand-ink)]/10 flex items-center gap-2"
           >
             <input
               type="text"
@@ -205,15 +207,15 @@ export const LiveConciergeChat: React.FC<LiveConciergeChatProps> = ({
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about services, areas, or quotes..."
               aria-label="Message California Client Concierge"
-              className="flex-1 px-3 py-2 text-xs text-[#202421] bg-[#F7F5F0] border border-[#202421]/15 rounded focus:outline-none focus:border-[#153D32]"
+              className="flex-1 px-3 py-2 text-xs text-[var(--brand-ink)] bg-[var(--brand-canvas)] border border-[var(--brand-ink)]/15 rounded focus:outline-none focus:border-[var(--brand-primary)]"
             />
             <button
               type="submit"
               disabled={!input.trim() || isSending}
               aria-label="Send message"
-              className="p-2 bg-[#153D32] text-[#F7F5F0] rounded hover:bg-[#102E26] disabled:opacity-50 transition-colors cursor-pointer shrink-0"
+              className="p-2 bg-[var(--brand-primary)] text-[var(--brand-canvas)] rounded hover:bg-[var(--brand-primary-hover)] disabled:opacity-50 transition-colors cursor-pointer shrink-0"
             >
-              <Send className="w-3.5 h-3.5 text-[#C6A66B]" />
+              <Send className="w-3.5 h-3.5 text-[var(--brand-accent)]" />
             </button>
           </form>
         </div>

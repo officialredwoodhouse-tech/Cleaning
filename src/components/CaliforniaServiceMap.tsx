@@ -198,13 +198,13 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
       {/* Left Column: California Regions & Live Address Verifier */}
-      <div className="lg:col-span-5 bg-[#F7F5F0] border border-[#202421]/10 rounded-lg p-6 md:p-8 flex flex-col justify-between">
+      <div className="lg:col-span-5 bg-[var(--brand-canvas)] border border-[var(--brand-ink)]/10 rounded-lg p-6 md:p-8 flex flex-col justify-between">
         <div>
-          <div className="flex items-center justify-between gap-2 pb-4 border-b border-[#202421]/10">
-            <span className="text-xs font-medium tracking-[0.14em] text-[#153D32]">
+          <div className="flex items-center justify-between gap-2 pb-4 border-b border-[var(--brand-ink)]/10">
+            <span className="text-xs font-medium tracking-[0.14em] text-[var(--brand-primary)]">
               California Service Corridors
             </span>
-            <span className="text-xs font-mono-tabular text-[#202421]/60">
+            <span className="text-xs font-mono-tabular text-[var(--brand-ink)]/60">
               {CALIFORNIA_REGIONS.length} Active Regions
             </span>
           </div>
@@ -213,24 +213,24 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
           <div className="mt-5 relative">
             <label
               htmlFor="ca-address-search"
-              className="block text-xs font-semibold tracking-wider text-[#202421]/80 mb-2"
+              className="block text-xs font-semibold tracking-wider text-[var(--brand-ink)]/80 mb-2"
             >
               Verify Your California Address or Community
             </label>
             <div className="relative">
-              <Search className="w-4 h-4 text-[#202421]/50 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Search className="w-4 h-4 text-[var(--brand-ink)]/50 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 id="ca-address-search"
                 type="text"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Search e.g. Bel Air, Atherton, 90210, Carmel..."
-                className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#202421]/20 rounded text-sm text-[#202421] placeholder:text-[#202421]/45 focus:outline-none focus:border-[#153D32]"
+                className="w-full pl-10 pr-4 py-2.5 bg-white border border-[var(--brand-ink)]/20 rounded text-sm text-[var(--brand-ink)] placeholder:text-[var(--brand-ink)]/45 focus:outline-none focus:border-[var(--brand-primary)]"
               />
             </div>
 
             {isLoadingSuggestions && (
-              <p className="text-xs text-[#202421]/60 mt-1.5">
+              <p className="text-xs text-[var(--brand-ink)]/60 mt-1.5">
                 Searching California locations via Google Maps...
               </p>
             )}
@@ -239,7 +239,7 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
               <ul
                 role="listbox"
                 aria-label="California address suggestions"
-                className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-[#202421]/15 rounded-lg shadow-lg max-h-60 overflow-y-auto divide-y divide-[#202421]/10"
+                className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-[var(--brand-ink)]/15 rounded-lg shadow-lg max-h-60 overflow-y-auto divide-y divide-[var(--brand-ink)]/10"
               >
                 {suggestions.map((suggestion, index) => {
                   const text = suggestion.placePrediction?.text?.text || 'California Location';
@@ -248,9 +248,9 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
                       <button
                         type="button"
                         onClick={() => void handleSelectSuggestion(suggestion)}
-                        className="w-full text-left px-4 py-2.5 text-xs sm:text-sm text-[#202421] hover:bg-[#F7F5F0] flex items-center gap-2.5 cursor-pointer"
+                        className="w-full text-left px-4 py-2.5 text-xs sm:text-sm text-[var(--brand-ink)] hover:bg-[var(--brand-canvas)] flex items-center gap-2.5 cursor-pointer"
                       >
-                        <MapPin className="w-4 h-4 text-[#153D32] shrink-0" />
+                        <MapPin className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />
                         <span className="truncate">{text}</span>
                       </button>
                     </li>
@@ -262,7 +262,7 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
 
           {/* Curated California Regions Selector */}
           <div className="mt-6">
-            <p className="text-xs font-semibold tracking-wider text-[#202421]/70 mb-3">
+            <p className="text-xs font-semibold tracking-wider text-[var(--brand-ink)]/70 mb-3">
               Select a California Service Corridor
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2 max-h-[300px] overflow-y-auto pr-1">
@@ -275,15 +275,15 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
                     onClick={() => setSelectedRegion(region)}
                     className={`w-full text-left p-3 rounded border transition-all duration-150 cursor-pointer flex items-start justify-between gap-3 ${
                       isSelected
-                        ? 'bg-[#153D32] text-[#F7F5F0] border-[#153D32]'
-                        : 'bg-white/70 text-[#202421] border-[#202421]/10 hover:border-[#153D32]/50'
+                        ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)] border-[var(--brand-primary)]'
+                        : 'bg-white/70 text-[var(--brand-ink)] border-[var(--brand-ink)]/10 hover:border-[var(--brand-primary)]/50'
                     }`}
                   >
                     <div className="min-w-0">
                       <p className="text-sm font-medium truncate">{region.label}</p>
                       <p
                         className={`text-xs mt-0.5 line-clamp-1 ${
-                          isSelected ? 'text-[#E9E6DF]/80' : 'text-[#202421]/60'
+                          isSelected ? 'text-[var(--brand-surface)]/80' : 'text-[var(--brand-ink)]/60'
                         }`}
                       >
                         {region.regionGroup} · {region.serviceNote}
@@ -291,7 +291,7 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
                     </div>
                     <Compass
                       className={`w-4 h-4 shrink-0 mt-0.5 ${
-                        isSelected ? 'text-[#C6A66B]' : 'text-[#153D32]/60'
+                        isSelected ? 'text-[var(--brand-accent)]' : 'text-[var(--brand-primary)]/60'
                       }`}
                     />
                   </button>
@@ -303,16 +303,16 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
 
         {/* Selected Verified Location Summary & Book CTA */}
         {verifiedPlace && (
-          <div className="mt-6 pt-5 border-t border-[#202421]/10">
+          <div className="mt-6 pt-5 border-t border-[var(--brand-ink)]/10">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-xs font-medium text-[#153D32]">
+                <p className="text-xs font-medium text-[var(--brand-primary)]">
                   Active Google Maps Selection
                 </p>
-                <p className="font-serif-display text-xl font-semibold text-[#202421] mt-0.5">
+                <p className="font-serif-display text-xl font-semibold text-[var(--brand-ink)] mt-0.5">
                   {verifiedPlace.displayName}
                 </p>
-                <p className="text-xs text-[#202421]/70 mt-0.5">
+                <p className="text-xs text-[var(--brand-ink)]/70 mt-0.5">
                   {verifiedPlace.formattedAddress}
                 </p>
               </div>
@@ -326,10 +326,10 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
                   verifiedPlace.displayName
                 )
               }
-              className="mt-4 w-full py-3 px-4 bg-[#153D32] hover:bg-[#102E26] text-[#F7F5F0] text-xs font-semibold tracking-[0.12em] rounded flex items-center justify-center gap-2 transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              className="mt-4 w-full py-3 px-4 bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded flex items-center justify-center gap-2 transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
               <span>Book Cleaning in {verifiedPlace.displayName}</span>
-              <ArrowRight className="w-4 h-4 text-[#C6A66B]" />
+              <ArrowRight className="w-4 h-4 text-[var(--brand-accent)]" />
             </button>
           </div>
         )}
@@ -337,7 +337,7 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
 
       {/* Right Column: Interactive Google Map with AdvancedMarker & InfoWindow */}
       <div
-        className={`lg:col-span-7 relative rounded-lg overflow-hidden border border-[#202421]/15 bg-[#E9E6DF] ${
+        className={`lg:col-span-7 relative rounded-lg overflow-hidden border border-[var(--brand-ink)]/15 bg-[var(--brand-surface)] ${
           compact ? 'h-[420px]' : 'h-[540px] lg:h-auto lg:min-h-[540px]'
         }`}
       >
@@ -359,9 +359,9 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
                 onClick={() => setInfoWindowOpen(true)}
               >
                 <Pin
-                  background="#153D32"
-                  borderColor="#C6A66B"
-                  glyphColor="#C6A66B"
+                  background="#141D2B"
+                  borderColor="#B88655"
+                  glyphColor="#B88655"
                   scale={1.3}
                 />
               </AdvancedMarker>
@@ -372,18 +372,18 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
                   maxWidth={280}
                   onCloseClick={() => setInfoWindowOpen(false)}
                 >
-                  <div className="p-1 text-[#202421]">
-                    <p className="text-[11px] font-semibold tracking-wider text-[#153D32]">
+                  <div className="p-1 text-[var(--brand-ink)]">
+                    <p className="text-[11px] font-semibold tracking-wider text-[var(--brand-primary)]">
                       Aurel California Service Area
                     </p>
-                    <h4 className="font-serif-display text-lg font-semibold text-[#202421] mt-0.5">
+                    <h4 className="font-serif-display text-lg font-semibold text-[var(--brand-ink)] mt-0.5">
                       {verifiedPlace.displayName}
                     </h4>
-                    <p className="text-xs text-[#202421]/75 mt-1">
+                    <p className="text-xs text-[var(--brand-ink)]/75 mt-1">
                       {verifiedPlace.formattedAddress}
                     </p>
                     {verifiedPlace.regionNote && (
-                      <p className="text-xs text-[#202421]/70 mt-1.5 leading-relaxed">
+                      <p className="text-xs text-[var(--brand-ink)]/70 mt-1.5 leading-relaxed">
                         {verifiedPlace.regionNote}
                       </p>
                     )}
@@ -395,7 +395,7 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
                           verifiedPlace.displayName
                         )
                       }
-                      className="mt-3 w-full py-2 px-3 bg-[#153D32] text-[#F7F5F0] text-xs font-medium rounded hover:bg-[#102E26] transition-colors cursor-pointer"
+                      className="mt-3 w-full py-2 px-3 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-medium rounded hover:bg-[var(--brand-primary-hover)] transition-colors cursor-pointer"
                     >
                       Book Now for This Area
                     </button>
@@ -407,7 +407,7 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
         </Map>
 
         {isSearchingRegion && (
-          <div className="absolute top-4 left-4 bg-[#F7F5F0]/95 backdrop-blur-sm border border-[#202421]/10 px-3.5 py-2 rounded text-xs font-medium text-[#153D32] shadow-sm">
+          <div className="absolute top-4 left-4 bg-[var(--brand-canvas)]/95 backdrop-blur-sm border border-[var(--brand-ink)]/10 px-3.5 py-2 rounded text-xs font-medium text-[var(--brand-primary)] shadow-sm">
             Locating California service corridor...
           </div>
         )}

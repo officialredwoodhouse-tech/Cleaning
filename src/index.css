@@ -1,21 +1,54 @@
 @import "tailwindcss";
 
 @layer base {
-  :root {
-    --color-forest: #153D32;
-    --color-ivory: #F7F5F0;
-    --color-gold: #C6A66B;
-    --color-charcoal: #202421;
-    --color-stone: #E9E6DF;
+  :root,
+  [data-theme="midnight"] {
+    --brand-primary: #141D2B;
+    --brand-primary-hover: #0C121C;
+    --brand-canvas: #FAF8F5;
+    --brand-surface: #EFECE6;
+    --brand-accent: #B88655;
+    --brand-accent-hover: #C99766;
+    --brand-ink: #181A1C;
     --font-serif: 'Cormorant Garamond', Georgia, serif;
     --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
   }
 
+  [data-theme="espresso"] {
+    --brand-primary: #261C17;
+    --brand-primary-hover: #1A120F;
+    --brand-canvas: #FAF7F2;
+    --brand-surface: #EFE9E0;
+    --brand-accent: #C89D66;
+    --brand-accent-hover: #D6AD79;
+    --brand-ink: #1E1916;
+  }
+
+  [data-theme="coastal"] {
+    --brand-primary: #1B3644;
+    --brand-primary-hover: #122631;
+    --brand-canvas: #F8F9FA;
+    --brand-surface: #E9ECEF;
+    --brand-accent: #C4A47C;
+    --brand-accent-hover: #D2B48E;
+    --brand-ink: #1A2126;
+  }
+
+  [data-theme="forest"] {
+    --brand-primary: #153D32;
+    --brand-primary-hover: #102E26;
+    --brand-canvas: #F7F5F0;
+    --brand-surface: #E9E6DF;
+    --brand-accent: #C6A66B;
+    --brand-accent-hover: #D4B67D;
+    --brand-ink: #202421;
+  }
+
   html {
     font-family: var(--font-sans);
-    color: var(--color-charcoal);
-    background-color: var(--color-ivory);
+    color: var(--brand-ink);
+    background-color: var(--brand-canvas);
     scroll-behavior: smooth;
   }
 
@@ -40,4 +73,5 @@
     scroll-behavior: auto !important;
   }
 }
+
 

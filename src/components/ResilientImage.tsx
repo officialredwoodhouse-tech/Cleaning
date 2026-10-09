@@ -22,15 +22,15 @@ export const ResilientImage: React.FC<ResilientImageProps> = ({
   if (hasError) {
     return (
       <div
-        className={`flex flex-col items-center justify-center bg-gradient-to-br from-[#153D32] via-[#1C4D40] to-[#202421] text-[#F7F5F0] p-8 text-center ${containerClassName}`}
+        className={`flex flex-col items-center justify-center bg-[var(--brand-primary)] text-[var(--brand-canvas)] p-8 text-center ${containerClassName}`}
         role="img"
         aria-label={alt}
       >
-        <Sparkles className="w-6 h-6 text-[#C6A66B] mb-3 opacity-80" />
-        <p className="font-serif-display text-lg tracking-wide text-[#F7F5F0]">
+        <Sparkles className="w-6 h-6 text-[var(--brand-accent)] mb-3 opacity-80" />
+        <p className="font-serif-display text-lg tracking-wide text-[var(--brand-canvas)]">
           {fallbackTitle || 'Aurel Architectural Interior'}
         </p>
-        <p className="text-xs text-[#E9E6DF]/70 mt-1 max-w-xs">{alt}</p>
+        <p className="text-xs text-[var(--brand-surface)]/70 mt-1 max-w-xs">{alt}</p>
       </div>
     );
   }

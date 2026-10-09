@@ -298,7 +298,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
       setAddressSuggestions([]);
       setShowSuggestions(false);
       sessionTokenRef.current = null;
-    } catch (err) {
+    } catch {
       const fallbackText = suggestion.placePrediction.text?.text || '';
       if (fallbackText) {
         setFormData((prev) => ({ ...prev, location: fallbackText }));
@@ -475,72 +475,72 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
       <div
         role="status"
         aria-live="polite"
-        className="bg-[#F7F5F0] border border-[#153D32]/25 rounded-lg p-8 md:p-12 text-[#202421]"
+        className="bg-[var(--brand-canvas)] border border-[var(--brand-primary)]/25 rounded-lg p-8 md:p-12 text-[var(--brand-ink)]"
       >
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[#202421]/10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[var(--brand-ink)]/10">
           <div>
-            <p className="text-xs font-medium tracking-[0.16em] text-[#153D32]">
+            <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)]">
               Quote Request Recorded · California Concierge Desk
             </p>
-            <h3 className="font-serif-display text-3xl md:text-4xl font-normal text-[#202421] mt-1">
+            <h3 className="font-serif-display text-3xl md:text-4xl font-normal text-[var(--brand-ink)] mt-1">
               Thank You, {submittedRecord.fullName}.
             </h3>
           </div>
-          <div className="bg-[#153D32] text-[#F7F5F0] px-4 py-2.5 rounded text-left md:text-right">
-            <span className="block text-[10px] tracking-widest text-[#E9E6DF]/75">
+          <div className="bg-[var(--brand-primary)] text-[var(--brand-canvas)] px-4 py-2.5 rounded text-left md:text-right">
+            <span className="block text-[10px] tracking-widest text-[var(--brand-surface)]/75">
               Reference Dossier
             </span>
-            <span className="font-mono-tabular text-base font-medium text-[#C6A66B]">
+            <span className="font-mono-tabular text-base font-medium text-[var(--brand-accent)]">
               {submittedRecord.referenceCode}
             </span>
           </div>
         </div>
 
-        <p className="mt-6 text-base text-[#202421]/85 leading-relaxed max-w-2xl">
+        <p className="mt-6 text-base text-[var(--brand-ink)]/85 leading-relaxed max-w-2xl">
           Your property specifications and preferred schedule have been recorded on our server. A
           California Client Advisor will review your requirements and prepare a tailored proposal
           for your space.
         </p>
 
         {/* Summary Grid */}
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6 bg-[#E9E6DF]/60 rounded-lg border border-[#202421]/10">
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6 bg-[var(--brand-surface)]/60 rounded-lg border border-[var(--brand-ink)]/10">
           <div>
-            <p className="text-xs text-[#202421]/60">Selected Service & Tier</p>
-            <p className="text-sm font-semibold text-[#202421] mt-1">
+            <p className="text-xs text-[var(--brand-ink)]/60">Selected Service & Tier</p>
+            <p className="text-sm font-semibold text-[var(--brand-ink)] mt-1">
               {submittedRecord.serviceType}
             </p>
-            <p className="text-xs text-[#153D32] mt-0.5">{submittedRecord.planTier}</p>
+            <p className="text-xs text-[var(--brand-primary)] mt-0.5">{submittedRecord.planTier}</p>
           </div>
           <div>
-            <p className="text-xs text-[#202421]/60">Property Profile</p>
-            <p className="text-sm font-semibold text-[#202421] mt-1">
+            <p className="text-xs text-[var(--brand-ink)]/60">Property Profile</p>
+            <p className="text-sm font-semibold text-[var(--brand-ink)] mt-1">
               {submittedRecord.propertyType}
             </p>
-            <p className="text-xs text-[#202421]/75 mt-0.5 font-mono-tabular">
+            <p className="text-xs text-[var(--brand-ink)]/75 mt-0.5 font-mono-tabular">
               {submittedRecord.propertySize} · {submittedRecord.frequency}
             </p>
           </div>
           <div>
-            <p className="text-xs text-[#202421]/60">Requested Schedule</p>
-            <p className="text-sm font-semibold text-[#202421] mt-1 font-mono-tabular">
+            <p className="text-xs text-[var(--brand-ink)]/60">Requested Schedule</p>
+            <p className="text-sm font-semibold text-[var(--brand-ink)] mt-1 font-mono-tabular">
               {submittedRecord.preferredDate}
             </p>
-            <p className="text-xs text-[#202421]/75 mt-0.5">{submittedRecord.preferredTime}</p>
+            <p className="text-xs text-[var(--brand-ink)]/75 mt-0.5">{submittedRecord.preferredTime}</p>
           </div>
           <div>
-            <p className="text-xs text-[#202421]/60">California Location</p>
-            <p className="text-sm font-semibold text-[#202421] mt-1">
+            <p className="text-xs text-[var(--brand-ink)]/60">California Location</p>
+            <p className="text-sm font-semibold text-[var(--brand-ink)] mt-1">
               {submittedRecord.location}
             </p>
-            <p className="text-xs text-[#202421]/75 mt-0.5">{submittedRecord.email}</p>
+            <p className="text-xs text-[var(--brand-ink)]/75 mt-0.5">{submittedRecord.email}</p>
           </div>
         </div>
 
         {/* Transparent Backend / CRM Integration Status Notice */}
-        <div className="mt-6 p-4 bg-white/80 border border-[#202421]/10 rounded text-xs text-[#202421]/75 flex items-start gap-3">
-          <ShieldCheck className="w-4 h-4 text-[#153D32] shrink-0 mt-0.5" />
+        <div className="mt-6 p-4 bg-white/80 border border-[var(--brand-ink)]/10 rounded text-xs text-[var(--brand-ink)]/75 flex items-start gap-3">
+          <ShieldCheck className="w-4 h-4 text-[var(--brand-primary)] shrink-0 mt-0.5" />
           <div>
-            <span className="font-semibold text-[#202421]">Backend Integration Status: </span>
+            <span className="font-semibold text-[var(--brand-ink)]">Backend Integration Status: </span>
             {serverNote}
           </div>
         </div>
@@ -549,9 +549,9 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
           <button
             type="button"
             onClick={handleDownloadDossier}
-            className="px-5 py-3 bg-[#153D32] text-[#F7F5F0] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[#102E26] transition-colors flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
+            className="px-5 py-3 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[var(--brand-primary-hover)] transition-colors flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
           >
-            <Download className="w-4 h-4 text-[#C6A66B]" />
+            <Download className="w-4 h-4 text-[var(--brand-accent)]" />
             <span>Download Quote Dossier (.txt)</span>
           </button>
 
@@ -561,7 +561,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
               setSubmittedRecord(null);
               setStep(1);
             }}
-            className="px-5 py-3 bg-transparent border border-[#202421]/25 text-[#202421] text-xs font-semibold tracking-[0.12em] rounded hover:border-[#153D32] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+            className="px-5 py-3 bg-transparent border border-[var(--brand-ink)]/25 text-[var(--brand-ink)] text-xs font-semibold tracking-[0.12em] rounded hover:border-[var(--brand-primary)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
           >
             Submit Another Property Request
           </button>
@@ -573,14 +573,14 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
   const isCommercial = formData.serviceType === 'Commercial Cleaning';
 
   return (
-    <div className="bg-[#F7F5F0] border border-[#202421]/15 rounded-lg p-6 sm:p-8 md:p-10">
+    <div className="bg-[var(--brand-canvas)] border border-[var(--brand-ink)]/15 rounded-lg p-6 sm:p-8 md:p-10">
       {/* Step Progress Header */}
-      <div className="pb-6 border-b border-[#202421]/10">
+      <div className="pb-6 border-b border-[var(--brand-ink)]/10">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-          <span className="text-xs font-mono-tabular font-medium text-[#153D32]">
+          <span className="text-xs font-mono-tabular font-medium text-[var(--brand-primary)]">
             Step 0{step} of 04
           </span>
-          <span className="text-xs text-[#202421]/60">
+          <span className="text-xs text-[var(--brand-ink)]/60">
             Draft automatically saved · California Properties
           </span>
         </div>
@@ -606,10 +606,10 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                 }}
                 className={`text-left pt-2.5 border-t-2 transition-colors cursor-pointer ${
                   isActive
-                    ? 'border-[#153D32] text-[#153D32]'
+                    ? 'border-[var(--brand-primary)] text-[var(--brand-primary)]'
                     : isCompleted
-                    ? 'border-[#C6A66B] text-[#202421]'
-                    : 'border-[#202421]/15 text-[#202421]/45'
+                    ? 'border-[var(--brand-accent)] text-[var(--brand-ink)]'
+                    : 'border-[var(--brand-ink)]/15 text-[var(--brand-ink)]/45'
                 }`}
               >
                 <span className="block text-[11px] font-mono-tabular">0{item.num}</span>
@@ -623,7 +623,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
       </div>
 
       <form onSubmit={handleSubmit} noValidate className="mt-8">
-        {/* Honeypot Spam Trap (Hidden from screen readers and visual users) */}
+        {/* Honeypot Spam Trap */}
         <div className="hidden" aria-hidden="true">
           <label htmlFor="websiteUrlHoneypot">Website</label>
           <input
@@ -640,10 +640,10 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
         {step === 1 && (
           <div className="space-y-8">
             <div>
-              <h3 className="font-serif-display text-2xl sm:text-3xl font-normal text-[#202421]">
+              <h3 className="font-serif-display text-2xl sm:text-3xl font-normal text-[var(--brand-ink)]">
                 01. Select Your Service
               </h3>
-              <p className="text-sm text-[#202421]/70 mt-1">
+              <p className="text-sm text-[var(--brand-ink)]/70 mt-1">
                 Choose the primary cleaning service and care tier best suited to your property.
               </p>
 
@@ -664,15 +664,15 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                       aria-pressed={selected}
                       className={`text-left p-4 rounded-lg border transition-all duration-150 cursor-pointer flex items-start justify-between gap-3 ${
                         selected
-                          ? 'bg-[#153D32] text-[#F7F5F0] border-[#153D32]'
-                          : 'bg-white text-[#202421] border-[#202421]/15 hover:border-[#153D32]/60'
+                          ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)] border-[var(--brand-primary)]'
+                          : 'bg-white text-[var(--brand-ink)] border-[var(--brand-ink)]/15 hover:border-[var(--brand-primary)]/60'
                       }`}
                     >
                       <div>
                         <p className="text-sm font-semibold">{option.label}</p>
                         <p
                           className={`text-xs mt-1 leading-relaxed ${
-                            selected ? 'text-[#E9E6DF]/85' : 'text-[#202421]/65'
+                            selected ? 'text-[var(--brand-surface)]/85' : 'text-[var(--brand-ink)]/65'
                           }`}
                         >
                           {option.subtitle}
@@ -681,8 +681,8 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                       <div
                         className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${
                           selected
-                            ? 'border-[#C6A66B] bg-[#C6A66B] text-[#153D32]'
-                            : 'border-[#202421]/30'
+                            ? 'border-[var(--brand-accent)] bg-[var(--brand-accent)] text-[var(--brand-primary)]'
+                            : 'border-[var(--brand-ink)]/30'
                         }`}
                       >
                         {selected && <Check className="w-3.5 h-3.5" />}
@@ -694,8 +694,8 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
             </div>
 
             {/* Service Plan Tier Selection */}
-            <div className="pt-6 border-t border-[#202421]/10">
-              <label className="block text-xs font-semibold tracking-wider text-[#202421]/80 mb-3">
+            <div className="pt-6 border-t border-[var(--brand-ink)]/10">
+              <label className="block text-xs font-semibold tracking-wider text-[var(--brand-ink)]/80 mb-3">
                 Preferred Service Plan Category
               </label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
@@ -708,19 +708,21 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                       onClick={() => updateField('planTier', tier.name)}
                       className={`p-4 rounded-lg border text-left transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-[#E9E6DF] border-[#153D32] ring-1 ring-[#153D32]'
-                          : 'bg-white border-[#202421]/15 hover:border-[#153D32]/50'
+                          ? 'bg-[var(--brand-surface)] border-[var(--brand-primary)] ring-1 ring-[var(--brand-primary)]'
+                          : 'bg-white border-[var(--brand-ink)]/15 hover:border-[var(--brand-primary)]/50'
                       }`}
                     >
                       <div className="flex items-center justify-between gap-2">
-                        <span className="font-serif-display text-lg font-semibold text-[#202421]">
+                        <span className="font-serif-display text-lg font-semibold text-[var(--brand-ink)]">
                           {tier.name}
                         </span>
                         {isSelected && (
-                          <span className="text-xs font-medium text-[#153D32]">Selected</span>
+                          <span className="text-xs font-medium text-[var(--brand-primary)]">
+                            Selected
+                          </span>
                         )}
                       </div>
-                      <p className="text-xs text-[#202421]/70 mt-1">{tier.description}</p>
+                      <p className="text-xs text-[var(--brand-ink)]/70 mt-1">{tier.description}</p>
                     </button>
                   );
                 })}
@@ -733,21 +735,20 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
         {step === 2 && (
           <div className="space-y-6">
             <div>
-              <h3 className="font-serif-display text-2xl sm:text-3xl font-normal text-[#202421]">
+              <h3 className="font-serif-display text-2xl sm:text-3xl font-normal text-[var(--brand-ink)]">
                 02. Tell Us About Your Property
               </h3>
-              <p className="text-sm text-[#202421]/70 mt-1">
+              <p className="text-sm text-[var(--brand-ink)]/70 mt-1">
                 Property dimensions and layout help us allocate the right specialist team and time
                 window.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Property Type */}
               <div>
                 <label
                   htmlFor="quote-property-type"
-                  className="block text-xs font-semibold tracking-wider text-[#202421] mb-2"
+                  className="block text-xs font-semibold tracking-wider text-[var(--brand-ink)] mb-2"
                 >
                   Property Type *
                 </label>
@@ -755,7 +756,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                   id="quote-property-type"
                   value={formData.propertyType}
                   onChange={(e) => updateField('propertyType', e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-[#202421]/20 rounded text-sm text-[#202421] focus:outline-none focus:border-[#153D32]"
+                  className="w-full px-4 py-3 bg-white border border-[var(--brand-ink)]/20 rounded text-sm text-[var(--brand-ink)] focus:outline-none focus:border-[var(--brand-primary)]"
                 >
                   {PROPERTY_TYPES.map((type) => (
                     <option key={type} value={type}>
@@ -770,11 +771,10 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                 )}
               </div>
 
-              {/* Approximate Property Size */}
               <div>
                 <label
                   htmlFor="quote-property-size"
-                  className="block text-xs font-semibold tracking-wider text-[#202421] mb-2"
+                  className="block text-xs font-semibold tracking-wider text-[var(--brand-ink)] mb-2"
                 >
                   Approximate Property Size *
                 </label>
@@ -782,7 +782,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                   id="quote-property-size"
                   value={formData.propertySize}
                   onChange={(e) => updateField('propertySize', e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-[#202421]/20 rounded text-sm text-[#202421] focus:outline-none focus:border-[#153D32]"
+                  className="w-full px-4 py-3 bg-white border border-[var(--brand-ink)]/20 rounded text-sm text-[var(--brand-ink)] focus:outline-none focus:border-[var(--brand-primary)]"
                 >
                   {PROPERTY_SIZES.map((size) => (
                     <option key={size} value={size}>
@@ -797,21 +797,24 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                 )}
               </div>
 
-              {/* Number of Bedrooms (if applicable) */}
               <div>
                 <label
                   htmlFor="quote-bedrooms"
-                  className="block text-xs font-semibold tracking-wider text-[#202421] mb-2"
+                  className="block text-xs font-semibold tracking-wider text-[var(--brand-ink)] mb-2"
                 >
-                  {isCommercial ? 'Executive Suites / Rooms (Optional)' : 'Number of Bedrooms (If Applicable)'}
+                  {isCommercial
+                    ? 'Executive Suites / Rooms (Optional)'
+                    : 'Number of Bedrooms (If Applicable)'}
                 </label>
                 <select
                   id="quote-bedrooms"
                   value={formData.bedrooms}
                   onChange={(e) => updateField('bedrooms', e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-[#202421]/20 rounded text-sm text-[#202421] focus:outline-none focus:border-[#153D32]"
+                  className="w-full px-4 py-3 bg-white border border-[var(--brand-ink)]/20 rounded text-sm text-[var(--brand-ink)] focus:outline-none focus:border-[var(--brand-primary)]"
                 >
-                  <option value="Not applicable (Commercial)">Not applicable (Commercial / Open Plan)</option>
+                  <option value="Not applicable (Commercial)">
+                    Not applicable (Commercial / Open Plan)
+                  </option>
                   <option value="1 – 2 Bedrooms">1 – 2 Bedrooms</option>
                   <option value="3 Bedrooms">3 Bedrooms</option>
                   <option value="4 Bedrooms">4 Bedrooms</option>
@@ -820,11 +823,10 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                 </select>
               </div>
 
-              {/* Number of Bathrooms (if applicable) */}
               <div>
                 <label
                   htmlFor="quote-bathrooms"
-                  className="block text-xs font-semibold tracking-wider text-[#202421] mb-2"
+                  className="block text-xs font-semibold tracking-wider text-[var(--brand-ink)] mb-2"
                 >
                   Number of Bathrooms / Restrooms
                 </label>
@@ -832,7 +834,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                   id="quote-bathrooms"
                   value={formData.bathrooms}
                   onChange={(e) => updateField('bathrooms', e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-[#202421]/20 rounded text-sm text-[#202421] focus:outline-none focus:border-[#153D32]"
+                  className="w-full px-4 py-3 bg-white border border-[var(--brand-ink)]/20 rounded text-sm text-[var(--brand-ink)] focus:outline-none focus:border-[var(--brand-primary)]"
                 >
                   <option value="1 – 2 Bathrooms">1 – 2 Bathrooms</option>
                   <option value="2.5 – 3.5 Bathrooms">2.5 – 3.5 Bathrooms</option>
@@ -843,9 +845,8 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
               </div>
             </div>
 
-            {/* Preferred Cleaning Frequency */}
             <div className="pt-2">
-              <label className="block text-xs font-semibold tracking-wider text-[#202421] mb-2.5">
+              <label className="block text-xs font-semibold tracking-wider text-[var(--brand-ink)] mb-2.5">
                 Preferred Cleaning Frequency *
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -858,8 +859,8 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                       onClick={() => updateField('frequency', freq)}
                       className={`px-4 py-3 rounded border text-left text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
                         selected
-                          ? 'bg-[#153D32] text-[#F7F5F0] border-[#153D32]'
-                          : 'bg-white text-[#202421] border-[#202421]/20 hover:border-[#153D32]'
+                          ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)] border-[var(--brand-primary)]'
+                          : 'bg-white text-[var(--brand-ink)] border-[var(--brand-ink)]/20 hover:border-[var(--brand-primary)]'
                       }`}
                     >
                       {freq}
@@ -880,33 +881,32 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
         {step === 3 && (
           <div className="space-y-6">
             <div>
-              <h3 className="font-serif-display text-2xl sm:text-3xl font-normal text-[#202421]">
+              <h3 className="font-serif-display text-2xl sm:text-3xl font-normal text-[var(--brand-ink)]">
                 03. Choose Your Preferences
               </h3>
-              <p className="text-sm text-[#202421]/70 mt-1">
+              <p className="text-sm text-[var(--brand-ink)]/70 mt-1">
                 Specify your preferred date, California location, and any architectural surface
                 notes.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Preferred Date */}
               <div>
                 <label
                   htmlFor="quote-preferred-date"
-                  className="block text-xs font-semibold tracking-wider text-[#202421] mb-2"
+                  className="block text-xs font-semibold tracking-wider text-[var(--brand-ink)] mb-2"
                 >
                   Preferred Date *
                 </label>
                 <div className="relative">
-                  <Calendar className="w-4 h-4 text-[#202421]/50 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Calendar className="w-4 h-4 text-[var(--brand-ink)]/50 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     id="quote-preferred-date"
                     type="date"
                     min={new Date().toISOString().split('T')[0]}
                     value={formData.preferredDate}
                     onChange={(e) => updateField('preferredDate', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-white border border-[#202421]/20 rounded text-sm text-[#202421] font-mono-tabular focus:outline-none focus:border-[#153D32]"
+                    className="w-full pl-10 pr-4 py-3 bg-white border border-[var(--brand-ink)]/20 rounded text-sm text-[var(--brand-ink)] font-mono-tabular focus:outline-none focus:border-[var(--brand-primary)]"
                   />
                 </div>
                 {errors.preferredDate && (
@@ -916,21 +916,20 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                 )}
               </div>
 
-              {/* Preferred Time Window */}
               <div>
                 <label
                   htmlFor="quote-preferred-time"
-                  className="block text-xs font-semibold tracking-wider text-[#202421] mb-2"
+                  className="block text-xs font-semibold tracking-wider text-[var(--brand-ink)] mb-2"
                 >
                   Preferred Arrival Window *
                 </label>
                 <div className="relative">
-                  <Clock className="w-4 h-4 text-[#202421]/50 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Clock className="w-4 h-4 text-[var(--brand-ink)]/50 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <select
                     id="quote-preferred-time"
                     value={formData.preferredTime}
                     onChange={(e) => updateField('preferredTime', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-white border border-[#202421]/20 rounded text-sm text-[#202421] focus:outline-none focus:border-[#153D32]"
+                    className="w-full pl-10 pr-4 py-3 bg-white border border-[var(--brand-ink)]/20 rounded text-sm text-[var(--brand-ink)] focus:outline-none focus:border-[var(--brand-primary)]"
                   >
                     {TIME_WINDOWS.map((tw) => (
                       <option key={tw} value={tw}>
@@ -947,16 +946,15 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
               </div>
             </div>
 
-            {/* California Location or Postcode with Google Places Autocomplete */}
             <div className="relative">
               <label
                 htmlFor="quote-location"
-                className="block text-xs font-semibold tracking-wider text-[#202421] mb-2"
+                className="block text-xs font-semibold tracking-wider text-[var(--brand-ink)] mb-2"
               >
                 California Location, Neighborhood, or ZIP Code *
               </label>
               <div className="relative">
-                <MapPin className="w-4 h-4 text-[#153D32] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <MapPin className="w-4 h-4 text-[var(--brand-primary)] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   id="quote-location"
                   type="text"
@@ -967,7 +965,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                     updateField('location', e.target.value);
                   }}
                   placeholder="Start typing your California address, community, or ZIP (e.g. Beverly Hills, 90210, Palo Alto)..."
-                  className="w-full pl-10 pr-4 py-3 bg-white border border-[#202421]/20 rounded text-sm text-[#202421] placeholder:text-[#202421]/45 focus:outline-none focus:border-[#153D32]"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-[var(--brand-ink)]/20 rounded text-sm text-[var(--brand-ink)] placeholder:text-[var(--brand-ink)]/45 focus:outline-none focus:border-[var(--brand-primary)]"
                 />
               </div>
               {errors.location && (
@@ -980,7 +978,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                 <ul
                   role="listbox"
                   aria-label="Suggested California addresses"
-                  className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-[#202421]/15 rounded-lg shadow-lg max-h-52 overflow-y-auto divide-y divide-[#202421]/10"
+                  className="absolute left-0 right-0 top-full mt-1 z-30 bg-white border border-[var(--brand-ink)]/15 rounded-lg shadow-lg max-h-52 overflow-y-auto divide-y divide-[var(--brand-ink)]/10"
                 >
                   {addressSuggestions.map((s, idx) => {
                     const label = s.placePrediction?.text?.text || '';
@@ -989,9 +987,9 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                         <button
                           type="button"
                           onClick={() => void handleSelectAddressSuggestion(s)}
-                          className="w-full text-left px-4 py-2.5 text-xs sm:text-sm text-[#202421] hover:bg-[#F7F5F0] flex items-center gap-2.5 cursor-pointer"
+                          className="w-full text-left px-4 py-2.5 text-xs sm:text-sm text-[var(--brand-ink)] hover:bg-[var(--brand-canvas)] flex items-center gap-2.5 cursor-pointer"
                         >
-                          <MapPin className="w-4 h-4 text-[#153D32] shrink-0" />
+                          <MapPin className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />
                           <span className="truncate">{label}</span>
                         </button>
                       </li>
@@ -1001,11 +999,10 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
               )}
             </div>
 
-            {/* Additional Requirements & Surface Notes */}
             <div>
               <label
                 htmlFor="quote-requirements"
-                className="block text-xs font-semibold tracking-wider text-[#202421] mb-2"
+                className="block text-xs font-semibold tracking-wider text-[var(--brand-ink)] mb-2"
               >
                 Architectural Surfaces & Additional Requirements (Optional)
               </label>
@@ -1019,8 +1016,8 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                       onClick={() => toggleSurfaceRequirement(chip)}
                       className={`px-3 py-1.5 text-xs rounded border transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                         active
-                          ? 'bg-[#153D32] text-[#F7F5F0] border-[#153D32]'
-                          : 'bg-white text-[#202421]/80 border-[#202421]/20 hover:border-[#153D32]'
+                          ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)] border-[var(--brand-primary)]'
+                          : 'bg-white text-[var(--brand-ink)]/80 border-[var(--brand-ink)]/20 hover:border-[var(--brand-primary)]'
                       }`}
                     >
                       {active ? `✓ ${chip}` : `+ ${chip}`}
@@ -1034,7 +1031,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                 value={formData.additionalRequirements}
                 onChange={(e) => updateField('additionalRequirements', e.target.value)}
                 placeholder="Note any delicate surfaces, guest suite preparations, gate access instructions, or preferred cleaning supplies..."
-                className="w-full px-4 py-3 bg-white border border-[#202421]/20 rounded text-sm text-[#202421] placeholder:text-[#202421]/45 focus:outline-none focus:border-[#153D32]"
+                className="w-full px-4 py-3 bg-white border border-[var(--brand-ink)]/20 rounded text-sm text-[var(--brand-ink)] placeholder:text-[var(--brand-ink)]/45 focus:outline-none focus:border-[var(--brand-primary)]"
               />
             </div>
           </div>
@@ -1044,10 +1041,10 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
         {step === 4 && (
           <div className="space-y-6">
             <div>
-              <h3 className="font-serif-display text-2xl sm:text-3xl font-normal text-[#202421]">
+              <h3 className="font-serif-display text-2xl sm:text-3xl font-normal text-[var(--brand-ink)]">
                 04. Contact Information
               </h3>
-              <p className="text-sm text-[#202421]/70 mt-1">
+              <p className="text-sm text-[var(--brand-ink)]/70 mt-1">
                 Provide your preferred contact details so our California Concierge team can deliver
                 your personalized quote.
               </p>
@@ -1057,7 +1054,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
               <div>
                 <label
                   htmlFor="quote-fullname"
-                  className="block text-xs font-semibold tracking-wider text-[#202421] mb-2"
+                  className="block text-xs font-semibold tracking-wider text-[var(--brand-ink)] mb-2"
                 >
                   Full Name *
                 </label>
@@ -1068,7 +1065,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                   value={formData.fullName}
                   onChange={(e) => updateField('fullName', e.target.value)}
                   placeholder="e.g. Evelyn Vance"
-                  className="w-full px-4 py-3 bg-white border border-[#202421]/20 rounded text-sm text-[#202421] focus:outline-none focus:border-[#153D32]"
+                  className="w-full px-4 py-3 bg-white border border-[var(--brand-ink)]/20 rounded text-sm text-[var(--brand-ink)] focus:outline-none focus:border-[var(--brand-primary)]"
                 />
                 {errors.fullName && (
                   <p role="alert" className="mt-1.5 text-xs text-red-700">
@@ -1080,7 +1077,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
               <div>
                 <label
                   htmlFor="quote-email"
-                  className="block text-xs font-semibold tracking-wider text-[#202421] mb-2"
+                  className="block text-xs font-semibold tracking-wider text-[var(--brand-ink)] mb-2"
                 >
                   Email Address *
                 </label>
@@ -1091,7 +1088,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                   value={formData.email}
                   onChange={(e) => updateField('email', e.target.value)}
                   placeholder="name@domain.com"
-                  className="w-full px-4 py-3 bg-white border border-[#202421]/20 rounded text-sm text-[#202421] focus:outline-none focus:border-[#153D32]"
+                  className="w-full px-4 py-3 bg-white border border-[var(--brand-ink)]/20 rounded text-sm text-[var(--brand-ink)] focus:outline-none focus:border-[var(--brand-primary)]"
                 />
                 {errors.email && (
                   <p role="alert" className="mt-1.5 text-xs text-red-700">
@@ -1103,7 +1100,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
               <div>
                 <label
                   htmlFor="quote-phone"
-                  className="block text-xs font-semibold tracking-wider text-[#202421] mb-2"
+                  className="block text-xs font-semibold tracking-wider text-[var(--brand-ink)] mb-2"
                 >
                   Phone Number *
                 </label>
@@ -1114,7 +1111,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                   value={formData.phone}
                   onChange={(e) => updateField('phone', e.target.value)}
                   placeholder="(310) 555-0192"
-                  className="w-full px-4 py-3 bg-white border border-[#202421]/20 rounded text-sm text-[#202421] font-mono-tabular focus:outline-none focus:border-[#153D32]"
+                  className="w-full px-4 py-3 bg-white border border-[var(--brand-ink)]/20 rounded text-sm text-[var(--brand-ink)] font-mono-tabular focus:outline-none focus:border-[var(--brand-primary)]"
                 />
                 {errors.phone && (
                   <p role="alert" className="mt-1.5 text-xs text-red-700">
@@ -1127,7 +1124,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
             <div>
               <label
                 htmlFor="quote-message"
-                className="block text-xs font-semibold tracking-wider text-[#202421] mb-2"
+                className="block text-xs font-semibold tracking-wider text-[var(--brand-ink)] mb-2"
               >
                 Additional Message or Walkthrough Preferences (Optional)
               </label>
@@ -1137,14 +1134,13 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                 value={formData.additionalMessage}
                 onChange={(e) => updateField('additionalMessage', e.target.value)}
                 placeholder="Share any preferred contact hours, estate manager contact details, or questions for our team..."
-                className="w-full px-4 py-3 bg-white border border-[#202421]/20 rounded text-sm text-[#202421] focus:outline-none focus:border-[#153D32]"
+                className="w-full px-4 py-3 bg-white border border-[var(--brand-ink)]/20 rounded text-sm text-[var(--brand-ink)] focus:outline-none focus:border-[var(--brand-primary)]"
               />
             </div>
 
-            {/* Live Pre-Submission Review Box */}
-            <div className="p-4 bg-[#E9E6DF]/70 rounded border border-[#202421]/10 text-xs text-[#202421]/80 flex flex-wrap items-center justify-between gap-4">
+            <div className="p-4 bg-[var(--brand-surface)]/70 rounded border border-[var(--brand-ink)]/10 text-xs text-[var(--brand-ink)]/80 flex flex-wrap items-center justify-between gap-4">
               <div>
-                <span className="font-semibold text-[#153D32]">Selected Scope:</span>{' '}
+                <span className="font-semibold text-[var(--brand-primary)]">Selected Scope:</span>{' '}
                 {formData.serviceType} ({formData.planTier}) · {formData.propertyType} (
                 {formData.propertySize})
               </div>
@@ -1165,18 +1161,18 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
         )}
 
         {/* Navigation Buttons */}
-        <div className="mt-8 pt-6 border-t border-[#202421]/10 flex items-center justify-between gap-4">
+        <div className="mt-8 pt-6 border-t border-[var(--brand-ink)]/10 flex items-center justify-between gap-4">
           {step > 1 ? (
             <button
               type="button"
               onClick={handlePrevStep}
-              className="px-5 py-3 bg-transparent border border-[#202421]/25 text-[#202421] text-xs font-semibold tracking-[0.12em] rounded hover:border-[#202421] transition-colors flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
+              className="px-5 py-3 bg-transparent border border-[var(--brand-ink)]/25 text-[var(--brand-ink)] text-xs font-semibold tracking-[0.12em] rounded hover:border-[var(--brand-ink)] transition-colors flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Previous Step</span>
             </button>
           ) : (
-            <div className="text-xs text-[#202421]/60">
+            <div className="text-xs text-[var(--brand-ink)]/60">
               Final pricing depends on property scope and requested service.
             </div>
           )}
@@ -1185,19 +1181,19 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
             <button
               type="button"
               onClick={handleNextStep}
-              className="px-6 py-3.5 bg-[#153D32] text-[#F7F5F0] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[#102E26] transition-colors flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
+              className="px-6 py-3.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[var(--brand-primary-hover)] transition-colors flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
             >
               <span>Continue</span>
-              <ArrowRight className="w-4 h-4 text-[#C6A66B]" />
+              <ArrowRight className="w-4 h-4 text-[var(--brand-accent)]" />
             </button>
           ) : (
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-7 py-3.5 bg-[#153D32] text-[#F7F5F0] text-xs font-semibold tracking-[0.14em] rounded hover:bg-[#102E26] disabled:opacity-60 transition-colors flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
+              className="px-7 py-3.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.14em] rounded hover:bg-[var(--brand-primary-hover)] disabled:opacity-60 transition-colors flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
             >
               <span>{isSubmitting ? 'Submitting Request...' : 'Request My Quote'}</span>
-              <ArrowRight className="w-4 h-4 text-[#C6A66B]" />
+              <ArrowRight className="w-4 h-4 text-[var(--brand-accent)]" />
             </button>
           )}
         </div>

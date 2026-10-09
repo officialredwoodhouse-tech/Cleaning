@@ -13,6 +13,7 @@ import {
   Check,
   ChevronDown,
   MapPin,
+  Palette,
   X,
 } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -38,8 +39,69 @@ import { LiveConciergeChat } from './components/LiveConciergeChat';
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
+type LuxuryThemeId = 'midnight' | 'espresso' | 'coastal' | 'forest';
+
+const LUXURY_THEMES: {
+  id: LuxuryThemeId;
+  name: string;
+  swatchPrimary: string;
+  swatchAccent: string;
+  swatchCanvas: string;
+}[] = [
+  {
+    id: 'midnight',
+    name: 'Pacific Midnight & Bronze',
+    swatchPrimary: '#141D2B',
+    swatchAccent: '#B88655',
+    swatchCanvas: '#FAF8F5',
+  },
+  {
+    id: 'espresso',
+    name: 'Montecito Espresso & Gold',
+    swatchPrimary: '#261C17',
+    swatchAccent: '#C89D66',
+    swatchCanvas: '#FAF7F2',
+  },
+  {
+    id: 'coastal',
+    name: 'Malibu Coastal Slate',
+    swatchPrimary: '#1B3644',
+    swatchAccent: '#C4A47C',
+    swatchCanvas: '#F8F9FA',
+  },
+  {
+    id: 'forest',
+    name: 'Heritage Forest & Champagne',
+    swatchPrimary: '#153D32',
+    swatchAccent: '#C6A66B',
+    swatchCanvas: '#F7F5F0',
+  },
+];
+
 export default function App() {
   const [gmpQuotaExceeded, setGmpQuotaExceeded] = useState(false);
+
+  // Active luxury color theme (defaults to the new Pacific Midnight & Warm Bronze palette)
+  const [activeTheme, setActiveTheme] = useState<LuxuryThemeId>(() => {
+    try {
+      const saved = localStorage.getItem('aurel_color_theme_v1') as LuxuryThemeId | null;
+      if (saved && ['midnight', 'espresso', 'coastal', 'forest'].includes(saved)) {
+        return saved;
+      }
+    } catch {
+      // ignore
+    }
+    return 'midnight';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', activeTheme);
+    try {
+      localStorage.setItem('aurel_color_theme_v1', activeTheme);
+    } catch {
+      // ignore
+    }
+  }, [activeTheme]);
 
   // Page routing state ('home' vs dedicated 'book' page) synced with URL query param ?page=book
   const [activePage, setActivePage] = useState<'home' | 'book'>(() => {
@@ -53,7 +115,9 @@ export default function App() {
   const [preselectedLocation, setPreselectedLocation] = useState<string | undefined>(undefined);
 
   // Interactive states for Services Filter, Service Modal, Testimonials, FAQ Accordion, and Legal Modals
-  const [serviceFilter, setServiceFilter] = useState<'all' | 'residential' | 'commercial' | 'specialty'>('all');
+  const [serviceFilter, setServiceFilter] = useState<
+    'all' | 'residential' | 'commercial' | 'specialty'
+  >('all');
   const [activeServiceModal, setActiveServiceModal] = useState<ServiceItem | null>(null);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [openFaqId, setOpenFaqId] = useState<string>(FAQ_ITEMS[0].id);
@@ -84,11 +148,7 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const openBookNowPage = (
-    service?: string,
-    tier?: string,
-    location?: string
-  ) => {
+  const openBookNowPage = (service?: string, tier?: string, location?: string) => {
     if (service) setPreselectedService(service);
     if (tier) setPreselectedTier(tier);
     if (location) setPreselectedLocation(location);
@@ -155,8 +215,11 @@ export default function App() {
 
   return (
     <APIProvider apiKey={GOOGLE_MAPS_API_KEY}>
-      <div id="top" className="min-h-screen flex flex-col bg-[#F7F5F0] text-[#202421]">
-        {/* Top-level Google Maps Platform Demo Quota Banner (Required by GMP Skill Section 8 Case A) */}
+      <div
+        id="top"
+        className="min-h-screen flex flex-col bg-[var(--brand-canvas)] text-[var(--brand-ink)] transition-colors duration-200"
+      >
+        {/* Top-level Google Maps Platform Demo Quota Banner */}
         {gmpQuotaExceeded && (
           <div className="bg-amber-50 border-b border-amber-200 text-amber-900 px-4 py-2.5 text-xs md:text-sm text-center sticky top-0 z-50 shadow-sm">
             <span>
@@ -197,7 +260,7 @@ export default function App() {
             {/* 4. HERO SECTION */}
             <section
               aria-label="Hero Introduction"
-              className="relative min-h-[92vh] flex items-center pt-24 pb-16 overflow-hidden bg-[#153D32]"
+              className="relative min-h-[92vh] flex items-center pt-24 pb-16 overflow-hidden bg-[var(--brand-primary)]"
             >
               {/* Full-width High-Resolution Architectural Photograph */}
               <div className="absolute inset-0 z-0">
@@ -215,8 +278,8 @@ export default function App() {
                   />
                 </motion.div>
                 {/* Measured Scrim Overlay for WCAG AA Contrast */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#153D32]/92 via-[#153D32]/75 to-[#153D32]/35" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#153D32]/85 via-transparent to-[#202421]/35" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[var(--brand-primary)]/92 via-[var(--brand-primary)]/75 to-[var(--brand-primary)]/35" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--brand-primary)]/88 via-transparent to-[var(--brand-ink)]/35" />
               </div>
 
               <div className="relative z-10 max-w-[1360px] mx-auto px-6 md:px-10 w-full">
@@ -226,7 +289,7 @@ export default function App() {
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-xs sm:text-sm font-medium tracking-[0.18em] text-[#C6A66B] mb-5"
+                    className="text-xs sm:text-sm font-medium tracking-[0.18em] text-[var(--brand-accent)] mb-5"
                   >
                     Premium Residential & Commercial Cleaning · California
                   </motion.p>
@@ -236,7 +299,7 @@ export default function App() {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.65, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-                    className="font-serif-display text-4xl sm:text-6xl lg:text-[64px] font-normal text-[#F7F5F0] leading-[1.06] tracking-wide"
+                    className="font-serif-display text-4xl sm:text-6xl lg:text-[64px] font-normal text-[var(--brand-canvas)] leading-[1.06] tracking-wide"
                   >
                     Luxury Begins With a Space That Feels Perfect.
                   </motion.h1>
@@ -246,7 +309,7 @@ export default function App() {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.65, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
-                    className="mt-6 text-base sm:text-lg text-[#F7F5F0]/90 leading-relaxed max-w-2xl"
+                    className="mt-6 text-base sm:text-lg text-[var(--brand-canvas)]/90 leading-relaxed max-w-2xl"
                   >
                     Exceptional cleaning for exceptional spaces. Experience meticulous attention to
                     detail, personalized service, and standards designed around your lifestyle.
@@ -262,7 +325,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => openBookNowPage()}
-                      className="px-7 py-4 bg-[#C6A66B] text-[#202421] text-xs font-semibold tracking-[0.14em] rounded hover:bg-[#d4b67d] transition-colors flex items-center gap-2.5 cursor-pointer whitespace-nowrap shrink-0"
+                      className="px-7 py-4 bg-[var(--brand-accent)] text-[var(--brand-ink)] text-xs font-semibold tracking-[0.14em] rounded hover:bg-[var(--brand-accent-hover)] transition-colors flex items-center gap-2.5 cursor-pointer whitespace-nowrap shrink-0"
                     >
                       <span>Book Your Cleaning</span>
                       <ArrowRight className="w-4 h-4" />
@@ -274,47 +337,73 @@ export default function App() {
                         e.preventDefault();
                         navigateToHomeSection('services');
                       }}
-                      className="px-7 py-4 bg-transparent border border-[#F7F5F0]/40 text-[#F7F5F0] text-xs font-semibold tracking-[0.14em] rounded hover:border-[#F7F5F0] hover:bg-[#F7F5F0]/10 transition-colors whitespace-nowrap shrink-0"
+                      className="px-7 py-4 bg-transparent border border-[var(--brand-canvas)]/40 text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.14em] rounded hover:border-[var(--brand-canvas)] hover:bg-[var(--brand-canvas)]/10 transition-colors whitespace-nowrap shrink-0"
                     >
                       Explore Our Services
                     </a>
                   </motion.div>
 
-                  {/* Three Compact Trust Indicators (Zero-Pill Unboxed Metadata with Separator) */}
+                  {/* Three Compact Trust Indicators */}
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.7, delay: 0.34 }}
-                    className="mt-10 pt-6 border-t border-[#F7F5F0]/20 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs sm:text-sm text-[#E9E6DF]/90"
+                    className="mt-10 pt-6 border-t border-[var(--brand-canvas)]/20 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs sm:text-sm text-[var(--brand-surface)]/90"
                   >
                     <span>Meticulous Attention to Detail</span>
-                    <span aria-hidden="true" className="text-[#C6A66B]">
+                    <span aria-hidden="true" className="text-[var(--brand-accent)]">
                       ·
                     </span>
                     <span>Tailored Cleaning Plans</span>
-                    <span aria-hidden="true" className="text-[#C6A66B]">
+                    <span aria-hidden="true" className="text-[var(--brand-accent)]">
                       ·
                     </span>
                     <span>Professional Service Across California</span>
                   </motion.div>
                 </div>
 
-                {/* Subtle Scroll Indicator */}
-                <div className="mt-12 md:mt-16 flex items-center justify-between text-xs text-[#E9E6DF]/70">
+                {/* Subtle Scroll Indicator & Interactive Color Palette Bar */}
+                <div className="mt-12 md:mt-16 flex flex-wrap items-center justify-between gap-4 text-xs text-[var(--brand-surface)]/75">
                   <a
                     href="#credibility-strip"
                     onClick={(e) => {
                       e.preventDefault();
                       navigateToHomeSection('credibility-strip');
                     }}
-                    className="inline-flex items-center gap-2 hover:text-[#F7F5F0] transition-colors"
+                    className="inline-flex items-center gap-2 hover:text-[var(--brand-canvas)] transition-colors"
                   >
                     <span>Discover The Aurel Standard</span>
-                    <ArrowDown className="w-3.5 h-3.5 text-[#C6A66B]" />
+                    <ArrowDown className="w-3.5 h-3.5 text-[var(--brand-accent)]" />
                   </a>
-                  <span className="hidden sm:inline font-mono-tabular">
-                    Beverly Hills · San Francisco · Montecito · Newport Beach
-                  </span>
+
+                  {/* Curated California Color Palette Switcher */}
+                  <div className="flex flex-wrap items-center gap-2 bg-[var(--brand-ink)]/45 backdrop-blur-sm px-3.5 py-2 rounded-lg border border-[var(--brand-canvas)]/15">
+                    <Palette className="w-3.5 h-3.5 text-[var(--brand-accent)]" />
+                    <span className="text-[11px] text-[var(--brand-canvas)]/80 mr-1">
+                      Palette:
+                    </span>
+                    {LUXURY_THEMES.map((theme) => {
+                      const isCurrent = activeTheme === theme.id;
+                      return (
+                        <button
+                          key={theme.id}
+                          type="button"
+                          onClick={() => setActiveTheme(theme.id)}
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                            isCurrent
+                              ? 'bg-[var(--brand-canvas)] text-[var(--brand-ink)]'
+                              : 'text-[var(--brand-canvas)]/75 hover:text-[var(--brand-canvas)]'
+                          }`}
+                        >
+                          <span
+                            className="w-2.5 h-2.5 rounded-full border border-white/40 shrink-0"
+                            style={{ backgroundColor: theme.swatchPrimary }}
+                          />
+                          <span>{theme.name.split('&')[0].trim()}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </section>
@@ -323,19 +412,19 @@ export default function App() {
             <section
               id="credibility-strip"
               aria-label="Core Service commitments"
-              className="bg-[#E9E6DF] border-b border-[#202421]/10 py-12 md:py-16"
+              className="bg-[var(--brand-surface)] border-b border-[var(--brand-ink)]/10 py-12 md:py-16"
             >
               <div className="max-w-[1360px] mx-auto px-6 md:px-10">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:divide-x lg:divide-[#202421]/10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:divide-x lg:divide-[var(--brand-ink)]/10">
                   {TRUST_INDICATORS.map((item, idx) => (
                     <div key={item.title} className={idx > 0 ? 'lg:pl-8' : ''}>
-                      <p className="text-xs font-mono-tabular text-[#153D32] mb-2">
+                      <p className="text-xs font-mono-tabular text-[var(--brand-primary)] mb-2">
                         0{idx + 1}
                       </p>
-                      <h2 className="font-serif-display text-xl font-semibold text-[#202421]">
+                      <h2 className="font-serif-display text-xl font-semibold text-[var(--brand-ink)]">
                         {item.title}
                       </h2>
-                      <p className="mt-2 text-xs sm:text-sm text-[#202421]/75 leading-relaxed">
+                      <p className="mt-2 text-xs sm:text-sm text-[var(--brand-ink)]/75 leading-relaxed">
                         {item.description}
                       </p>
                     </div>
@@ -348,32 +437,32 @@ export default function App() {
             <section
               id="services"
               aria-labelledby="services-heading"
-              className="py-24 md:py-32 bg-[#F7F5F0]"
+              className="py-24 md:py-32 bg-[var(--brand-canvas)]"
             >
               <div className="max-w-[1360px] mx-auto px-6 md:px-10">
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-14">
                   <div className="max-w-2xl">
-                    <p className="text-xs font-medium tracking-[0.16em] text-[#153D32] mb-3">
+                    <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)] mb-3">
                       Our Services
                     </p>
                     <h2
                       id="services-heading"
-                      className="font-serif-display text-3xl sm:text-5xl font-normal text-[#202421] leading-[1.1]"
+                      className="font-serif-display text-3xl sm:text-5xl font-normal text-[var(--brand-ink)] leading-[1.1]"
                     >
                       Thoughtful Care for Every Kind of Space.
                     </h2>
-                    <p className="mt-4 text-base text-[#202421]/80 leading-relaxed">
+                    <p className="mt-4 text-base text-[var(--brand-ink)]/80 leading-relaxed">
                       From the comfort of your home to the professionalism of your workplace, every
                       service is delivered with care, precision, and attention to the details that
                       matter.
                     </p>
                   </div>
 
-                  {/* Interactive Filter Bar (Functional Segmented Buttons) */}
+                  {/* Interactive Filter Bar */}
                   <div
                     role="tablist"
                     aria-label="Filter cleaning services by category"
-                    className="flex flex-wrap items-center gap-1.5 p-1.5 bg-[#E9E6DF] border border-[#202421]/10 rounded-lg self-start"
+                    className="flex flex-wrap items-center gap-1.5 p-1.5 bg-[var(--brand-surface)] border border-[var(--brand-ink)]/10 rounded-lg self-start"
                   >
                     {[
                       { id: 'all', label: 'All Services (6)' },
@@ -395,8 +484,8 @@ export default function App() {
                           }
                           className={`px-3.5 py-2 text-xs font-medium rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                             active
-                              ? 'bg-[#153D32] text-[#F7F5F0]'
-                              : 'text-[#202421]/75 hover:text-[#202421]'
+                              ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)]'
+                              : 'text-[var(--brand-ink)]/75 hover:text-[var(--brand-ink)]'
                           }`}
                         >
                           {tab.label}
@@ -413,10 +502,10 @@ export default function App() {
                       key={service.id}
                       className={`${
                         serviceFilter === 'all' ? service.colSpanClass : 'lg:col-span-6'
-                      } group bg-[#E9E6DF]/55 border border-[#202421]/10 rounded-lg overflow-hidden flex flex-col justify-between transition-colors hover:border-[#153D32]/40`}
+                      } group bg-[var(--brand-surface)]/55 border border-[var(--brand-ink)]/10 rounded-lg overflow-hidden flex flex-col justify-between transition-colors hover:border-[var(--brand-primary)]/40`}
                     >
                       <div>
-                        <div className="relative aspect-[16/10] overflow-hidden bg-[#202421]">
+                        <div className="relative aspect-[16/10] overflow-hidden bg-[var(--brand-ink)]">
                           <ResilientImage
                             src={service.image}
                             alt={service.imageAlt}
@@ -426,36 +515,36 @@ export default function App() {
                         </div>
 
                         <div className="p-7 md:p-8">
-                          <div className="flex items-center gap-2 text-xs text-[#153D32] font-mono-tabular mb-2">
+                          <div className="flex items-center gap-2 text-xs text-[var(--brand-primary)] font-mono-tabular mb-2">
                             <span>{service.number}.</span>
                             <span aria-hidden="true">·</span>
                             <span className="font-sans capitalize">{service.category} Care</span>
                           </div>
 
-                          <h3 className="font-serif-display text-2xl sm:text-3xl font-medium text-[#202421]">
+                          <h3 className="font-serif-display text-2xl sm:text-3xl font-medium text-[var(--brand-ink)]">
                             {service.title}
                           </h3>
 
-                          <p className="mt-3 text-sm sm:text-base text-[#202421]/80 leading-relaxed">
+                          <p className="mt-3 text-sm sm:text-base text-[var(--brand-ink)]/80 leading-relaxed">
                             {service.description}
                           </p>
                         </div>
                       </div>
 
-                      <div className="px-7 md:px-8 pb-7 pt-4 border-t border-[#202421]/10 flex flex-wrap items-center justify-between gap-4">
+                      <div className="px-7 md:px-8 pb-7 pt-4 border-t border-[var(--brand-ink)]/10 flex flex-wrap items-center justify-between gap-4">
                         <button
                           type="button"
                           onClick={() => setActiveServiceModal(service)}
-                          className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.12em] text-[#153D32] hover:text-[#202421] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                          className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.12em] text-[var(--brand-primary)] hover:text-[var(--brand-ink)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
                         >
                           <span>{service.ctaLabel}</span>
-                          <ArrowUpRight className="w-4 h-4 text-[#C6A66B]" />
+                          <ArrowUpRight className="w-4 h-4 text-[var(--brand-accent)]" />
                         </button>
 
                         <button
                           type="button"
                           onClick={() => openBookNowPage(service.id)}
-                          className="text-xs font-medium text-[#202421]/70 hover:text-[#153D32] underline underline-offset-4 cursor-pointer whitespace-nowrap shrink-0"
+                          className="text-xs font-medium text-[var(--brand-ink)]/70 hover:text-[var(--brand-primary)] underline underline-offset-4 cursor-pointer whitespace-nowrap shrink-0"
                         >
                           Book This Service
                         </button>
@@ -469,32 +558,32 @@ export default function App() {
             {/* 7. SIGNATURE BRAND STATEMENT */}
             <section
               aria-labelledby="signature-statement-heading"
-              className="py-24 md:py-32 bg-[#153D32] text-[#F7F5F0]"
+              className="py-24 md:py-32 bg-[var(--brand-primary)] text-[var(--brand-canvas)]"
             >
               <div className="max-w-[1360px] mx-auto px-6 md:px-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                   <div className="lg:col-span-7">
-                    <p className="text-xs font-medium tracking-[0.18em] text-[#C6A66B] mb-4">
+                    <p className="text-xs font-medium tracking-[0.18em] text-[var(--brand-accent)] mb-4">
                       Aurel Philosophy
                     </p>
                     <h2
                       id="signature-statement-heading"
-                      className="font-serif-display text-4xl sm:text-5xl lg:text-6xl font-normal text-[#F7F5F0] leading-[1.08] tracking-wide"
+                      className="font-serif-display text-4xl sm:text-5xl lg:text-6xl font-normal text-[var(--brand-canvas)] leading-[1.08] tracking-wide"
                     >
                       Clean Is the Standard. Exceptional Is the Difference.
                     </h2>
-                    <p className="mt-6 text-base sm:text-lg text-[#E9E6DF]/90 leading-relaxed max-w-2xl">
+                    <p className="mt-6 text-base sm:text-lg text-[var(--brand-surface)]/90 leading-relaxed max-w-2xl">
                       We believe a truly clean space is about more than appearances. It is about
                       comfort, confidence, and the quiet satisfaction of knowing every detail has
                       been considered.
                     </p>
-                    <div className="mt-8 pt-6 border-t border-[#F7F5F0]/15 flex flex-wrap items-center gap-6 text-xs text-[#E9E6DF]/80">
+                    <div className="mt-8 pt-6 border-t border-[var(--brand-canvas)]/15 flex flex-wrap items-center gap-6 text-xs text-[var(--brand-surface)]/80">
                       <span>Private Estates & Penthouses</span>
-                      <span aria-hidden="true" className="text-[#C6A66B]">
+                      <span aria-hidden="true" className="text-[var(--brand-accent)]">
                         ·
                       </span>
                       <span>Architectural Studios & Executive Offices</span>
-                      <span aria-hidden="true" className="text-[#C6A66B]">
+                      <span aria-hidden="true" className="text-[var(--brand-accent)]">
                         ·
                       </span>
                       <span>Bespoke California Scheduling</span>
@@ -502,7 +591,7 @@ export default function App() {
                   </div>
 
                   <div className="lg:col-span-5">
-                    <div className="rounded-lg overflow-hidden border border-[#C6A66B]/30 aspect-[4/3] bg-[#202421]">
+                    <div className="rounded-lg overflow-hidden border border-[var(--brand-accent)]/30 aspect-[4/3] bg-[var(--brand-ink)]">
                       <ResilientImage
                         src={BRAND_IMAGES.residentialKitchen}
                         alt="Immaculate luxury interior kitchen with natural light and honed stone countertops"
@@ -518,16 +607,16 @@ export default function App() {
             <section
               id="approach"
               aria-labelledby="approach-heading"
-              className="py-24 md:py-32 bg-[#F7F5F0] border-b border-[#202421]/10"
+              className="py-24 md:py-32 bg-[var(--brand-canvas)] border-b border-[var(--brand-ink)]/10"
             >
               <div className="max-w-[1360px] mx-auto px-6 md:px-10">
                 <div className="max-w-2xl mb-16">
-                  <p className="text-xs font-medium tracking-[0.16em] text-[#153D32] mb-3">
+                  <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)] mb-3">
                     The Aurel Standard
                   </p>
                   <h2
                     id="approach-heading"
-                    className="font-serif-display text-3xl sm:text-5xl font-normal text-[#202421] leading-[1.1]"
+                    className="font-serif-display text-3xl sm:text-5xl font-normal text-[var(--brand-ink)] leading-[1.1]"
                   >
                     A Considered Approach to Every Detail.
                   </h2>
@@ -537,20 +626,20 @@ export default function App() {
                   {APPROACH_STEPS.map((stepItem) => (
                     <div
                       key={stepItem.number}
-                      className="pt-6 border-t border-[#202421]/20 flex flex-col justify-between"
+                      className="pt-6 border-t border-[var(--brand-ink)]/20 flex flex-col justify-between"
                     >
                       <div>
-                        <span className="font-mono-tabular text-sm font-medium text-[#153D32]">
+                        <span className="font-mono-tabular text-sm font-medium text-[var(--brand-primary)]">
                           {stepItem.number} —
                         </span>
-                        <h3 className="font-serif-display text-2xl font-medium text-[#202421] mt-3">
+                        <h3 className="font-serif-display text-2xl font-medium text-[var(--brand-ink)] mt-3">
                           {stepItem.title}
                         </h3>
-                        <p className="mt-3 text-sm sm:text-base text-[#202421]/85 leading-relaxed">
+                        <p className="mt-3 text-sm sm:text-base text-[var(--brand-ink)]/85 leading-relaxed">
                           {stepItem.description}
                         </p>
                       </div>
-                      <p className="mt-5 pt-4 border-t border-[#202421]/10 text-xs text-[#202421]/65 leading-relaxed">
+                      <p className="mt-5 pt-4 border-t border-[var(--brand-ink)]/10 text-xs text-[var(--brand-ink)]/65 leading-relaxed">
                         {stepItem.detail}
                       </p>
                     </div>
@@ -563,23 +652,23 @@ export default function App() {
             <section
               id="about"
               aria-labelledby="why-choose-heading"
-              className="py-24 md:py-32 bg-[#F7F5F0]"
+              className="py-24 md:py-32 bg-[var(--brand-canvas)]"
             >
               <div className="max-w-[1360px] mx-auto px-6 md:px-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
                   {/* Left: Large Vertical Editorial Photograph */}
                   <div className="lg:col-span-5 flex flex-col">
-                    <div className="relative rounded-lg overflow-hidden border border-[#202421]/15 flex-1 min-h-[440px] bg-[#202421]">
+                    <div className="relative rounded-lg overflow-hidden border border-[var(--brand-ink)]/15 flex-1 min-h-[440px] bg-[var(--brand-ink)]">
                       <ResilientImage
                         src={BRAND_IMAGES.specialistCare}
-                        alt="Professional luxury housekeeping specialist in a tailored forest-green apron carefully detailing a honed marble console table"
+                        alt="Professional luxury housekeeping specialist carefully detailing a honed marble console table"
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#202421]/90 via-[#202421]/50 to-transparent p-6 text-[#F7F5F0]">
+                      <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[var(--brand-ink)]/90 via-[var(--brand-ink)]/50 to-transparent p-6 text-[var(--brand-canvas)]">
                         <p className="font-serif-display text-xl">
                           Discreet Stewardship for Private & Commercial Properties
                         </p>
-                        <p className="text-xs text-[#E9E6DF]/80 mt-1">
+                        <p className="text-xs text-[var(--brand-surface)]/80 mt-1">
                           Every surface treated according to its material composition.
                         </p>
                       </div>
@@ -589,32 +678,32 @@ export default function App() {
                   {/* Right: Five Reasons to Choose Aurel Cleaning Co. */}
                   <div className="lg:col-span-7 flex flex-col justify-between">
                     <div>
-                      <p className="text-xs font-medium tracking-[0.16em] text-[#153D32] mb-3">
+                      <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)] mb-3">
                         Why Choose Aurel
                       </p>
                       <h2
                         id="why-choose-heading"
-                        className="font-serif-display text-3xl sm:text-5xl font-normal text-[#202421] leading-[1.1]"
+                        className="font-serif-display text-3xl sm:text-5xl font-normal text-[var(--brand-ink)] leading-[1.1]"
                       >
                         Considered Service. Impeccable Attention.
                       </h2>
                     </div>
 
-                    <div className="mt-8 divide-y divide-[#202421]/12 border-y border-[#202421]/12">
+                    <div className="mt-8 divide-y divide-[var(--brand-ink)]/12 border-y border-[var(--brand-ink)]/12">
                       {WHY_CHOOSE_REASONS.map((reason) => (
                         <div
                           key={reason.number}
                           className="py-5 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 sm:gap-8"
                         >
                           <div className="flex items-baseline gap-3 sm:w-2/5 shrink-0">
-                            <span className="font-mono-tabular text-xs text-[#153D32]">
+                            <span className="font-mono-tabular text-xs text-[var(--brand-primary)]">
                               {reason.number}.
                             </span>
-                            <h3 className="font-serif-display text-xl sm:text-2xl font-medium text-[#202421]">
+                            <h3 className="font-serif-display text-xl sm:text-2xl font-medium text-[var(--brand-ink)]">
                               {reason.title}
                             </h3>
                           </div>
-                          <p className="text-sm sm:text-base text-[#202421]/80 leading-relaxed sm:w-3/5">
+                          <p className="text-sm sm:text-base text-[var(--brand-ink)]/80 leading-relaxed sm:w-3/5">
                             {reason.description}
                           </p>
                         </div>
@@ -622,14 +711,14 @@ export default function App() {
                     </div>
 
                     <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-                      <p className="text-xs text-[#202421]/65">
+                      <p className="text-xs text-[var(--brand-ink)]/65">
                         Custom protocols available for fine art residences, designer showrooms, and
                         private estates.
                       </p>
                       <button
                         type="button"
                         onClick={() => openBookNowPage()}
-                        className="px-5 py-3 bg-[#153D32] text-[#F7F5F0] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[#102E26] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                        className="px-5 py-3 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[var(--brand-primary-hover)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
                       >
                         Schedule a Consultation
                       </button>
@@ -646,21 +735,21 @@ export default function App() {
             <section
               id="california-map"
               aria-labelledby="california-map-heading"
-              className="py-24 md:py-32 bg-[#F7F5F0] border-b border-[#202421]/10"
+              className="py-24 md:py-32 bg-[var(--brand-canvas)] border-b border-[var(--brand-ink)]/10"
             >
               <div className="max-w-[1360px] mx-auto px-6 md:px-10">
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12">
                   <div className="max-w-2xl">
-                    <p className="text-xs font-medium tracking-[0.16em] text-[#153D32] mb-3">
+                    <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)] mb-3">
                       Based in California · Service Corridors
                     </p>
                     <h2
                       id="california-map-heading"
-                      className="font-serif-display text-3xl sm:text-5xl font-normal text-[#202421] leading-[1.1]"
+                      className="font-serif-display text-3xl sm:text-5xl font-normal text-[var(--brand-ink)] leading-[1.1]"
                     >
                       Serving California’s Premier Residential & Commercial Addresses.
                     </h2>
-                    <p className="mt-4 text-base text-[#202421]/80 leading-relaxed">
+                    <p className="mt-4 text-base text-[var(--brand-ink)]/80 leading-relaxed">
                       Explore our active California service regions below or search your property
                       address to verify coverage and begin a tailored quote on our Book Now page.
                     </p>
@@ -669,9 +758,9 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => openBookNowPage()}
-                    className="px-6 py-3.5 bg-[#153D32] text-[#F7F5F0] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[#102E26] transition-colors flex items-center gap-2 self-start lg:self-auto cursor-pointer whitespace-nowrap shrink-0"
+                    className="px-6 py-3.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[var(--brand-primary-hover)] transition-colors flex items-center gap-2 self-start lg:self-auto cursor-pointer whitespace-nowrap shrink-0"
                   >
-                    <MapPin className="w-4 h-4 text-[#C6A66B]" />
+                    <MapPin className="w-4 h-4 text-[var(--brand-accent)]" />
                     <span>Open Dedicated Book Now Page</span>
                   </button>
                 </div>
@@ -687,17 +776,17 @@ export default function App() {
             {/* 11. TESTIMONIALS CAROUSEL */}
             <section
               aria-labelledby="testimonials-heading"
-              className="py-24 md:py-32 bg-[#E9E6DF] border-b border-[#202421]/10"
+              className="py-24 md:py-32 bg-[var(--brand-surface)] border-b border-[var(--brand-ink)]/10"
             >
               <div className="max-w-[1360px] mx-auto px-6 md:px-10">
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
                   <div>
-                    <p className="text-xs font-medium tracking-[0.16em] text-[#153D32] mb-3">
+                    <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)] mb-3">
                       Client Perspectives · Development Placeholders
                     </p>
                     <h2
                       id="testimonials-heading"
-                      className="font-serif-display text-3xl sm:text-5xl font-normal text-[#202421] leading-[1.1]"
+                      className="font-serif-display text-3xl sm:text-5xl font-normal text-[var(--brand-ink)] leading-[1.1]"
                     >
                       A Standard Worth Coming Back To.
                     </h2>
@@ -713,11 +802,11 @@ export default function App() {
                         )
                       }
                       aria-label="Previous testimonial"
-                      className="p-3 rounded border border-[#202421]/20 text-[#202421] hover:border-[#153D32] hover:bg-[#F7F5F0] transition-colors cursor-pointer"
+                      className="p-3 rounded border border-[var(--brand-ink)]/20 text-[var(--brand-ink)] hover:border-[var(--brand-primary)] hover:bg-[var(--brand-canvas)] transition-colors cursor-pointer"
                     >
                       <ArrowLeft className="w-4 h-4" />
                     </button>
-                    <span className="text-xs font-mono-tabular text-[#202421]/70 px-2">
+                    <span className="text-xs font-mono-tabular text-[var(--brand-ink)]/70 px-2">
                       0{testimonialIndex + 1} / 0{PLACEHOLDER_TESTIMONIALS.length}
                     </span>
                     <button
@@ -728,7 +817,7 @@ export default function App() {
                         )
                       }
                       aria-label="Next testimonial"
-                      className="p-3 rounded border border-[#202421]/20 text-[#202421] hover:border-[#153D32] hover:bg-[#F7F5F0] transition-colors cursor-pointer"
+                      className="p-3 rounded border border-[var(--brand-ink)]/20 text-[var(--brand-ink)] hover:border-[var(--brand-primary)] hover:bg-[var(--brand-canvas)] transition-colors cursor-pointer"
                     >
                       <ArrowRight className="w-4 h-4" />
                     </button>
@@ -736,27 +825,29 @@ export default function App() {
                 </div>
 
                 {/* Active Testimonial Card */}
-                <div className="bg-[#F7F5F0] border border-[#202421]/10 rounded-lg p-8 sm:p-12 md:p-16">
-                  <blockquote className="font-serif-display text-2xl sm:text-3xl lg:text-4xl font-normal text-[#202421] leading-[1.3] max-w-4xl">
+                <div className="bg-[var(--brand-canvas)] border border-[var(--brand-ink)]/10 rounded-lg p-8 sm:p-12 md:p-16">
+                  <blockquote className="font-serif-display text-2xl sm:text-3xl lg:text-4xl font-normal text-[var(--brand-ink)] leading-[1.3] max-w-4xl">
                     “{currentTestimonial.quote}”
                   </blockquote>
 
-                  <div className="mt-8 pt-6 border-t border-[#202421]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex flex-wrap items-center gap-2 text-sm text-[#202421]">
+                  <div className="mt-8 pt-6 border-t border-[var(--brand-ink)]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex flex-wrap items-center gap-2 text-sm text-[var(--brand-ink)]">
                       <span className="font-semibold">{currentTestimonial.authorInitials}</span>
-                      <span aria-hidden="true" className="text-[#C6A66B]">
+                      <span aria-hidden="true" className="text-[var(--brand-accent)]">
                         ·
                       </span>
-                      <span className="text-[#202421]/75">{currentTestimonial.locationRegion}</span>
-                      <span aria-hidden="true" className="text-[#C6A66B]">
+                      <span className="text-[var(--brand-ink)]/75">
+                        {currentTestimonial.locationRegion}
+                      </span>
+                      <span aria-hidden="true" className="text-[var(--brand-accent)]">
                         ·
                       </span>
-                      <span className="text-[#153D32] font-medium">
+                      <span className="text-[var(--brand-primary)] font-medium">
                         {currentTestimonial.serviceCategory}
                       </span>
                     </div>
 
-                    <p className="text-xs text-[#202421]/55">
+                    <p className="text-xs text-[var(--brand-ink)]/55">
                       [Placeholder testimonial for layout preview — replace with verified client
                       reviews before publication]
                     </p>
@@ -769,20 +860,20 @@ export default function App() {
             <section
               id="pricing"
               aria-labelledby="pricing-heading"
-              className="py-24 md:py-32 bg-[#F7F5F0] border-b border-[#202421]/10"
+              className="py-24 md:py-32 bg-[var(--brand-canvas)] border-b border-[var(--brand-ink)]/10"
             >
               <div className="max-w-[1360px] mx-auto px-6 md:px-10">
                 <div className="max-w-2xl mb-14">
-                  <p className="text-xs font-medium tracking-[0.16em] text-[#153D32] mb-3">
+                  <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)] mb-3">
                     Service Plans & Custom Quotes
                   </p>
                   <h2
                     id="pricing-heading"
-                    className="font-serif-display text-3xl sm:text-5xl font-normal text-[#202421] leading-[1.1]"
+                    className="font-serif-display text-3xl sm:text-5xl font-normal text-[var(--brand-ink)] leading-[1.1]"
                   >
                     Your Space. Your Requirements. Your Quote.
                   </h2>
-                  <p className="mt-4 text-base text-[#202421]/80 leading-relaxed">
+                  <p className="mt-4 text-base text-[var(--brand-ink)]/80 leading-relaxed">
                     Final pricing depends on your property size, architectural finishes, current
                     condition, and service frequency. Select the service plan category that matches
                     your requirements to request a personalized proposal.
@@ -797,13 +888,19 @@ export default function App() {
                         key={tier.id}
                         className={`rounded-lg p-8 flex flex-col justify-between border ${
                           isFeatured
-                            ? 'bg-[#153D32] text-[#F7F5F0] border-[#153D32]'
-                            : 'bg-[#E9E6DF]/55 text-[#202421] border-[#202421]/12'
+                            ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)] border-[var(--brand-primary)]'
+                            : 'bg-[var(--brand-surface)]/55 text-[var(--brand-ink)] border-[var(--brand-ink)]/12'
                         }`}
                       >
                         <div>
                           <div className="flex items-center justify-between gap-2 text-xs font-mono-tabular mb-3">
-                            <span className={isFeatured ? 'text-[#C6A66B]' : 'text-[#153D32]'}>
+                            <span
+                              className={
+                                isFeatured
+                                  ? 'text-[var(--brand-accent)]'
+                                  : 'text-[var(--brand-primary)]'
+                              }
+                            >
                               Plan 0{idx + 1}
                             </span>
                             <span>Request a Quote</span>
@@ -812,7 +909,9 @@ export default function App() {
                           <h3 className="font-serif-display text-3xl font-normal">{tier.name}</h3>
                           <p
                             className={`text-xs mt-1 ${
-                              isFeatured ? 'text-[#C6A66B]' : 'text-[#153D32]'
+                              isFeatured
+                                ? 'text-[var(--brand-accent)]'
+                                : 'text-[var(--brand-primary)]'
                             }`}
                           >
                             {tier.tagline}
@@ -820,7 +919,9 @@ export default function App() {
 
                           <p
                             className={`mt-4 text-sm leading-relaxed ${
-                              isFeatured ? 'text-[#E9E6DF]/90' : 'text-[#202421]/80'
+                              isFeatured
+                                ? 'text-[var(--brand-surface)]/90'
+                                : 'text-[var(--brand-ink)]/80'
                             }`}
                           >
                             {tier.description}
@@ -828,12 +929,16 @@ export default function App() {
 
                           <div
                             className={`mt-6 pt-6 border-t ${
-                              isFeatured ? 'border-[#F7F5F0]/15' : 'border-[#202421]/10'
+                              isFeatured
+                                ? 'border-[var(--brand-canvas)]/15'
+                                : 'border-[var(--brand-ink)]/10'
                             }`}
                           >
                             <p
                               className={`text-xs font-semibold tracking-wider mb-3 ${
-                                isFeatured ? 'text-[#E9E6DF]' : 'text-[#202421]'
+                                isFeatured
+                                  ? 'text-[var(--brand-surface)]'
+                                  : 'text-[var(--brand-ink)]'
                               }`}
                             >
                               Key Scope Highlights
@@ -843,12 +948,16 @@ export default function App() {
                                 <li key={i} className="flex items-start gap-2.5">
                                   <Check
                                     className={`w-4 h-4 shrink-0 mt-0.5 ${
-                                      isFeatured ? 'text-[#C6A66B]' : 'text-[#153D32]'
+                                      isFeatured
+                                        ? 'text-[var(--brand-accent)]'
+                                        : 'text-[var(--brand-primary)]'
                                     }`}
                                   />
                                   <span
                                     className={
-                                      isFeatured ? 'text-[#F7F5F0]/90' : 'text-[#202421]/85'
+                                      isFeatured
+                                        ? 'text-[var(--brand-canvas)]/90'
+                                        : 'text-[var(--brand-ink)]/85'
                                     }
                                   >
                                     {point}
@@ -862,7 +971,9 @@ export default function App() {
                         <div className="mt-8 pt-6 border-t border-current/10">
                           <p
                             className={`text-xs mb-4 ${
-                              isFeatured ? 'text-[#E9E6DF]/75' : 'text-[#202421]/65'
+                              isFeatured
+                                ? 'text-[var(--brand-surface)]/75'
+                                : 'text-[var(--brand-ink)]/65'
                             }`}
                           >
                             Ideal for: {tier.idealFor}
@@ -872,8 +983,8 @@ export default function App() {
                             onClick={() => openBookNowPage(undefined, tier.name)}
                             className={`w-full py-3.5 px-5 text-xs font-semibold tracking-[0.12em] rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                               isFeatured
-                                ? 'bg-[#C6A66B] text-[#202421] hover:bg-[#d4b67d]'
-                                : 'bg-[#153D32] text-[#F7F5F0] hover:bg-[#102E26]'
+                                ? 'bg-[var(--brand-accent)] text-[var(--brand-ink)] hover:bg-[var(--brand-accent-hover)]'
+                                : 'bg-[var(--brand-primary)] text-[var(--brand-canvas)] hover:bg-[var(--brand-primary-hover)]'
                             }`}
                           >
                             Get Your Personalized Quote
@@ -890,21 +1001,21 @@ export default function App() {
             <section
               id="quote"
               aria-labelledby="quote-section-heading"
-              className="py-24 md:py-32 bg-[#E9E6DF]"
+              className="py-24 md:py-32 bg-[var(--brand-surface)]"
             >
               <div className="max-w-[1360px] mx-auto px-6 md:px-10">
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12">
                   <div className="max-w-2xl">
-                    <p className="text-xs font-medium tracking-[0.16em] text-[#153D32] mb-3">
+                    <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)] mb-3">
                       Interactive Quote Request
                     </p>
                     <h2
                       id="quote-section-heading"
-                      className="font-serif-display text-3xl sm:text-5xl font-normal text-[#202421] leading-[1.1]"
+                      className="font-serif-display text-3xl sm:text-5xl font-normal text-[var(--brand-ink)] leading-[1.1]"
                     >
                       Begin Your Personalized Cleaning Proposal.
                     </h2>
-                    <p className="mt-3 text-base text-[#202421]/80 leading-relaxed">
+                    <p className="mt-3 text-base text-[var(--brand-ink)]/80 leading-relaxed">
                       Share your service requirements below, or open our full-page California
                       booking view.
                     </p>
@@ -913,7 +1024,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => openBookNowPage()}
-                    className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.12em] text-[#153D32] hover:text-[#202421] underline underline-offset-4 cursor-pointer whitespace-nowrap shrink-0"
+                    className="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.12em] text-[var(--brand-primary)] hover:text-[var(--brand-ink)] underline underline-offset-4 cursor-pointer whitespace-nowrap shrink-0"
                   >
                     <span>Switch to Full-Screen Book Now Page</span>
                     <ArrowUpRight className="w-4 h-4" />
@@ -932,21 +1043,21 @@ export default function App() {
             <section
               id="faq"
               aria-labelledby="faq-heading"
-              className="py-24 md:py-32 bg-[#F7F5F0]"
+              className="py-24 md:py-32 bg-[var(--brand-canvas)]"
             >
               <div className="max-w-[1360px] mx-auto px-6 md:px-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                   <div className="lg:col-span-5">
-                    <p className="text-xs font-medium tracking-[0.16em] text-[#153D32] mb-3">
+                    <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)] mb-3">
                       Frequently Asked Questions
                     </p>
                     <h2
                       id="faq-heading"
-                      className="font-serif-display text-3xl sm:text-5xl font-normal text-[#202421] leading-[1.1]"
+                      className="font-serif-display text-3xl sm:text-5xl font-normal text-[var(--brand-ink)] leading-[1.1]"
                     >
                       Everything You Need to Know.
                     </h2>
-                    <p className="mt-4 text-sm sm:text-base text-[#202421]/75 leading-relaxed">
+                    <p className="mt-4 text-sm sm:text-base text-[var(--brand-ink)]/75 leading-relaxed">
                       Have a specific question regarding architectural finishes, estate access, or
                       commercial scheduling in California? Reach out to our Client Concierge or
                       request a tailored quote.
@@ -954,13 +1065,13 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => openBookNowPage()}
-                      className="mt-8 px-6 py-3.5 bg-[#153D32] text-[#F7F5F0] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[#102E26] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                      className="mt-8 px-6 py-3.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[var(--brand-primary-hover)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
                     >
                       Request a Personalized Quote
                     </button>
                   </div>
 
-                  <div className="lg:col-span-7 divide-y divide-[#202421]/12 border-y border-[#202421]/12">
+                  <div className="lg:col-span-7 divide-y divide-[var(--brand-ink)]/12 border-y border-[var(--brand-ink)]/12">
                     {FAQ_ITEMS.map((faq) => {
                       const isOpen = openFaqId === faq.id;
                       return (
@@ -971,11 +1082,11 @@ export default function App() {
                               aria-expanded={isOpen}
                               aria-controls={`faq-panel-${faq.id}`}
                               onClick={() => setOpenFaqId(isOpen ? '' : faq.id)}
-                              className="w-full text-left flex items-center justify-between gap-4 font-serif-display text-xl sm:text-2xl font-medium text-[#202421] hover:text-[#153D32] transition-colors cursor-pointer"
+                              className="w-full text-left flex items-center justify-between gap-4 font-serif-display text-xl sm:text-2xl font-medium text-[var(--brand-ink)] hover:text-[var(--brand-primary)] transition-colors cursor-pointer"
                             >
                               <span>{faq.question}</span>
                               <ChevronDown
-                                className={`w-5 h-5 text-[#153D32] shrink-0 transition-transform duration-200 ${
+                                className={`w-5 h-5 text-[var(--brand-primary)] shrink-0 transition-transform duration-200 ${
                                   isOpen ? 'rotate-180' : ''
                                 }`}
                               />
@@ -985,7 +1096,7 @@ export default function App() {
                             <div
                               id={`faq-panel-${faq.id}`}
                               role="region"
-                              className="mt-3 pr-8 text-sm sm:text-base text-[#202421]/80 leading-relaxed"
+                              className="mt-3 pr-8 text-sm sm:text-base text-[var(--brand-ink)]/80 leading-relaxed"
                             >
                               {faq.answer}
                             </div>
@@ -1001,7 +1112,7 @@ export default function App() {
             {/* 15. FINAL CALL-TO-ACTION SECTION */}
             <section
               aria-labelledby="final-cta-heading"
-              className="relative py-24 md:py-32 bg-[#153D32] text-[#F7F5F0] overflow-hidden"
+              className="relative py-24 md:py-32 bg-[var(--brand-primary)] text-[var(--brand-canvas)] overflow-hidden"
             >
               <div className="absolute inset-0 z-0 opacity-25">
                 <ResilientImage
@@ -1009,20 +1120,20 @@ export default function App() {
                   alt="Contemporary California luxury residence"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-[#153D32]/80" />
+                <div className="absolute inset-0 bg-[var(--brand-primary)]/80" />
               </div>
 
               <div className="relative z-10 max-w-[1360px] mx-auto px-6 md:px-10 text-center">
-                <p className="text-xs font-medium tracking-[0.18em] text-[#C6A66B] mb-4">
+                <p className="text-xs font-medium tracking-[0.18em] text-[var(--brand-accent)] mb-4">
                   Aurel Cleaning Co. · California
                 </p>
                 <h2
                   id="final-cta-heading"
-                  className="font-serif-display text-4xl sm:text-5xl lg:text-6xl font-normal text-[#F7F5F0] max-w-3xl mx-auto leading-[1.08]"
+                  className="font-serif-display text-4xl sm:text-5xl lg:text-6xl font-normal text-[var(--brand-canvas)] max-w-3xl mx-auto leading-[1.08]"
                 >
                   Come Home to a Higher Standard.
                 </h2>
-                <p className="mt-5 text-base sm:text-lg text-[#E9E6DF]/90 max-w-xl mx-auto leading-relaxed">
+                <p className="mt-5 text-base sm:text-lg text-[var(--brand-surface)]/90 max-w-xl mx-auto leading-relaxed">
                   Let us take care of the details, so you can enjoy the space around you.
                 </p>
 
@@ -1030,7 +1141,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => openBookNowPage()}
-                    className="px-7 py-4 bg-[#C6A66B] text-[#202421] text-xs font-semibold tracking-[0.14em] rounded hover:bg-[#d4b67d] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                    className="px-7 py-4 bg-[var(--brand-accent)] text-[var(--brand-ink)] text-xs font-semibold tracking-[0.14em] rounded hover:bg-[var(--brand-accent-hover)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
                   >
                     Request Your Quote
                   </button>
@@ -1040,7 +1151,7 @@ export default function App() {
                       e.preventDefault();
                       navigateToHomeSection('contact');
                     }}
-                    className="px-7 py-4 bg-transparent border border-[#F7F5F0]/40 text-[#F7F5F0] text-xs font-semibold tracking-[0.14em] rounded hover:border-[#F7F5F0] hover:bg-[#F7F5F0]/10 transition-colors whitespace-nowrap shrink-0"
+                    className="px-7 py-4 bg-transparent border border-[var(--brand-canvas)]/40 text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.14em] rounded hover:border-[var(--brand-canvas)] hover:bg-[var(--brand-canvas)]/10 transition-colors whitespace-nowrap shrink-0"
                   >
                     Contact Our Team
                   </a>
@@ -1053,10 +1164,10 @@ export default function App() {
         {/* 16. FOOTER */}
         <footer
           id="contact"
-          className="bg-[#153D32] text-[#F7F5F0] border-t border-[#F7F5F0]/15 pt-16 pb-12"
+          className="bg-[var(--brand-primary)] text-[var(--brand-canvas)] border-t border-[var(--brand-canvas)]/15 pt-16 pb-12"
         >
           <div className="max-w-[1360px] mx-auto px-6 md:px-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-14 border-b border-[#F7F5F0]/15">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-14 border-b border-[var(--brand-canvas)]/15">
               {/* Brand & Tagline */}
               <div className="lg:col-span-4">
                 <a
@@ -1065,25 +1176,55 @@ export default function App() {
                     e.preventDefault();
                     navigateToHomeSection('top');
                   }}
-                  className="font-serif-display text-2xl font-semibold tracking-[0.14em] text-[#F7F5F0]"
+                  className="font-serif-display text-2xl font-semibold tracking-[0.14em] text-[var(--brand-canvas)]"
                 >
                   AUREL CLEANING CO.
                 </a>
-                <p className="font-serif-display italic text-lg text-[#C6A66B] mt-2">
+                <p className="font-serif-display italic text-lg text-[var(--brand-accent)] mt-2">
                   “Exceptional Spaces. Impeccable Standards.”
                 </p>
-                <p className="mt-4 text-xs text-[#E9E6DF]/75 leading-relaxed max-w-sm">
+                <p className="mt-4 text-xs text-[var(--brand-surface)]/75 leading-relaxed max-w-sm">
                   Bespoke residential, deep cleaning, move-in/move-out, post-construction, and
                   commercial property care across California.
                 </p>
+
+                {/* Palette Switcher in Footer */}
+                <div className="mt-6 pt-5 border-t border-[var(--brand-canvas)]/10">
+                  <p className="text-[11px] font-semibold tracking-wider text-[var(--brand-accent)] mb-2.5">
+                    Brand Color Atmosphere
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {LUXURY_THEMES.map((theme) => {
+                      const isCurrent = activeTheme === theme.id;
+                      return (
+                        <button
+                          key={theme.id}
+                          type="button"
+                          onClick={() => setActiveTheme(theme.id)}
+                          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded text-xs transition-colors cursor-pointer whitespace-nowrap shrink-0 border ${
+                            isCurrent
+                              ? 'bg-[var(--brand-canvas)] text-[var(--brand-ink)] border-[var(--brand-canvas)] font-semibold'
+                              : 'bg-transparent text-[var(--brand-surface)]/80 border-[var(--brand-canvas)]/20 hover:border-[var(--brand-canvas)]/60'
+                          }`}
+                        >
+                          <span
+                            className="w-3 h-3 rounded-full border border-black/20"
+                            style={{ backgroundColor: theme.swatchPrimary }}
+                          />
+                          <span>{theme.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
 
               {/* Navigation Links */}
               <div className="lg:col-span-2">
-                <h3 className="text-xs font-semibold tracking-[0.14em] text-[#C6A66B] mb-4">
+                <h3 className="text-xs font-semibold tracking-[0.14em] text-[var(--brand-accent)] mb-4">
                   Navigation
                 </h3>
-                <ul className="space-y-2.5 text-xs sm:text-sm text-[#E9E6DF]/85">
+                <ul className="space-y-2.5 text-xs sm:text-sm text-[var(--brand-surface)]/85">
                   <li>
                     <a
                       href="#top"
@@ -1091,7 +1232,7 @@ export default function App() {
                         e.preventDefault();
                         navigateToHomeSection('top');
                       }}
-                      className="hover:text-[#C6A66B] transition-colors"
+                      className="hover:text-[var(--brand-accent)] transition-colors"
                     >
                       Home
                     </a>
@@ -1103,7 +1244,7 @@ export default function App() {
                         e.preventDefault();
                         navigateToHomeSection('services');
                       }}
-                      className="hover:text-[#C6A66B] transition-colors"
+                      className="hover:text-[var(--brand-accent)] transition-colors"
                     >
                       Services
                     </a>
@@ -1115,7 +1256,7 @@ export default function App() {
                         e.preventDefault();
                         navigateToHomeSection('approach');
                       }}
-                      className="hover:text-[#C6A66B] transition-colors"
+                      className="hover:text-[var(--brand-accent)] transition-colors"
                     >
                       Our Approach
                     </a>
@@ -1127,7 +1268,7 @@ export default function App() {
                         e.preventDefault();
                         navigateToHomeSection('about');
                       }}
-                      className="hover:text-[#C6A66B] transition-colors"
+                      className="hover:text-[var(--brand-accent)] transition-colors"
                     >
                       About Us
                     </a>
@@ -1139,7 +1280,7 @@ export default function App() {
                         e.preventDefault();
                         navigateToHomeSection('california-map');
                       }}
-                      className="hover:text-[#C6A66B] transition-colors"
+                      className="hover:text-[var(--brand-accent)] transition-colors"
                     >
                       California Map
                     </a>
@@ -1148,7 +1289,7 @@ export default function App() {
                     <button
                       type="button"
                       onClick={() => openBookNowPage()}
-                      className="hover:text-[#C6A66B] transition-colors cursor-pointer"
+                      className="hover:text-[var(--brand-accent)] transition-colors cursor-pointer"
                     >
                       Book Now
                     </button>
@@ -1160,7 +1301,7 @@ export default function App() {
                         e.preventDefault();
                         navigateToHomeSection('faq');
                       }}
-                      className="hover:text-[#C6A66B] transition-colors"
+                      className="hover:text-[var(--brand-accent)] transition-colors"
                     >
                       FAQs
                     </a>
@@ -1168,28 +1309,28 @@ export default function App() {
                 </ul>
               </div>
 
-              {/* Contact Details (Placeholders where unverified) */}
+              {/* Contact Details */}
               <div className="lg:col-span-3">
-                <h3 className="text-xs font-semibold tracking-[0.14em] text-[#C6A66B] mb-4">
+                <h3 className="text-xs font-semibold tracking-[0.14em] text-[var(--brand-accent)] mb-4">
                   California Concierge Contact
                 </h3>
-                <dl className="space-y-3 text-xs text-[#E9E6DF]/85">
+                <dl className="space-y-3 text-xs text-[var(--brand-surface)]/85">
                   <div>
-                    <dt className="text-[#E9E6DF]/55">Service Area</dt>
+                    <dt className="text-[var(--brand-surface)]/55">Service Area</dt>
                     <dd className="mt-0.5">{BUSINESS_CONTACT_PLACEHOLDERS.serviceAreaDisplay}</dd>
                   </div>
                   <div>
-                    <dt className="text-[#E9E6DF]/55">Electronic Mail</dt>
+                    <dt className="text-[var(--brand-surface)]/55">Electronic Mail</dt>
                     <dd className="mt-0.5 font-mono-tabular">
                       {BUSINESS_CONTACT_PLACEHOLDERS.emailDisplay}
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-[#E9E6DF]/55">Direct Telephone</dt>
+                    <dt className="text-[var(--brand-surface)]/55">Direct Telephone</dt>
                     <dd className="mt-0.5">{BUSINESS_CONTACT_PLACEHOLDERS.phoneDisplay}</dd>
                   </div>
                   <div className="pt-2">
-                    <span className="text-[11px] text-[#E9E6DF]/60">
+                    <span className="text-[11px] text-[var(--brand-surface)]/60">
                       Social Profiles: [Instagram · Facebook · LinkedIn — Configure verified URLs in
                       siteContent.ts]
                     </span>
@@ -1199,10 +1340,10 @@ export default function App() {
 
               {/* Private Client Advisories / Mailing List */}
               <div className="lg:col-span-3">
-                <h3 className="text-xs font-semibold tracking-[0.14em] text-[#C6A66B] mb-4">
+                <h3 className="text-xs font-semibold tracking-[0.14em] text-[var(--brand-accent)] mb-4">
                   Seasonal Property Care Notes
                 </h3>
-                <p className="text-xs text-[#E9E6DF]/75 leading-relaxed mb-4">
+                <p className="text-xs text-[var(--brand-surface)]/75 leading-relaxed mb-4">
                   Optional mailing list for seasonal California property maintenance schedules and
                   stone/wood care advisories.
                 </p>
@@ -1216,17 +1357,17 @@ export default function App() {
                     value={newsletterEmail}
                     onChange={(e) => setNewsletterEmail(e.target.value)}
                     placeholder="Enter your email address"
-                    className="px-3.5 py-2.5 bg-[#F7F5F0]/10 border border-[#F7F5F0]/25 rounded text-xs text-[#F7F5F0] placeholder:text-[#E9E6DF]/50 focus:outline-none focus:border-[#C6A66B]"
+                    className="px-3.5 py-2.5 bg-[var(--brand-canvas)]/10 border border-[var(--brand-canvas)]/25 rounded text-xs text-[var(--brand-canvas)] placeholder:text-[var(--brand-surface)]/50 focus:outline-none focus:border-[var(--brand-accent)]"
                   />
                   <button
                     type="submit"
-                    className="py-2.5 px-4 bg-[#C6A66B] text-[#202421] text-xs font-semibold tracking-wider rounded hover:bg-[#d4b67d] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                    className="py-2.5 px-4 bg-[var(--brand-accent)] text-[var(--brand-ink)] text-xs font-semibold tracking-wider rounded hover:bg-[var(--brand-accent-hover)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
                   >
                     Subscribe
                   </button>
                 </form>
                 {newsletterStatus && (
-                  <p className="mt-2 text-xs text-[#C6A66B]" role="status">
+                  <p className="mt-2 text-xs text-[var(--brand-accent)]" role="status">
                     {newsletterStatus}
                   </p>
                 )}
@@ -1234,22 +1375,20 @@ export default function App() {
             </div>
 
             {/* Bottom Copyright & Legal Links */}
-            <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#E9E6DF]/65">
-              <p>
-                © {new Date().getFullYear()} AUREL CLEANING CO. All rights reserved.
-              </p>
+            <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--brand-surface)]/65">
+              <p>© {new Date().getFullYear()} AUREL CLEANING CO. All rights reserved.</p>
               <div className="flex flex-wrap items-center gap-6">
                 <button
                   type="button"
                   onClick={() => setLegalModal('privacy')}
-                  className="hover:text-[#F7F5F0] transition-colors cursor-pointer"
+                  className="hover:text-[var(--brand-canvas)] transition-colors cursor-pointer"
                 >
                   Privacy Policy
                 </button>
                 <button
                   type="button"
                   onClick={() => setLegalModal('terms')}
-                  className="hover:text-[#F7F5F0] transition-colors cursor-pointer"
+                  className="hover:text-[var(--brand-canvas)] transition-colors cursor-pointer"
                 >
                   Terms of Service
                 </button>
@@ -1264,10 +1403,10 @@ export default function App() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="service-modal-title"
-            className="fixed inset-0 z-50 bg-[#202421]/75 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6"
+            className="fixed inset-0 z-50 bg-[var(--brand-ink)]/75 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6"
           >
-            <div className="bg-[#F7F5F0] text-[#202421] border border-[#202421]/20 rounded-lg max-w-2xl w-full overflow-hidden shadow-2xl">
-              <div className="relative h-52 bg-[#202421]">
+            <div className="bg-[var(--brand-canvas)] text-[var(--brand-ink)] border border-[var(--brand-ink)]/20 rounded-lg max-w-2xl w-full overflow-hidden shadow-2xl">
+              <div className="relative h-52 bg-[var(--brand-ink)]">
                 <ResilientImage
                   src={activeServiceModal.image}
                   alt={activeServiceModal.imageAlt}
@@ -1277,41 +1416,41 @@ export default function App() {
                   type="button"
                   onClick={() => setActiveServiceModal(null)}
                   aria-label="Close service details"
-                  className="absolute top-4 right-4 p-2 bg-[#202421]/80 text-[#F7F5F0] rounded-full hover:bg-[#153D32] transition-colors cursor-pointer"
+                  className="absolute top-4 right-4 p-2 bg-[var(--brand-ink)]/80 text-[var(--brand-canvas)] rounded-full hover:bg-[var(--brand-primary)] transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               <div className="p-6 sm:p-8">
-                <p className="text-xs font-mono-tabular text-[#153D32]">
+                <p className="text-xs font-mono-tabular text-[var(--brand-primary)]">
                   Service {activeServiceModal.number} · {activeServiceModal.category}
                 </p>
                 <h3
                   id="service-modal-title"
-                  className="font-serif-display text-3xl font-medium text-[#202421] mt-1"
+                  className="font-serif-display text-3xl font-medium text-[var(--brand-ink)] mt-1"
                 >
                   {activeServiceModal.title}
                 </h3>
-                <p className="mt-2 text-sm text-[#202421]/80 leading-relaxed">
+                <p className="mt-2 text-sm text-[var(--brand-ink)]/80 leading-relaxed">
                   {activeServiceModal.description}
                 </p>
 
-                <div className="mt-6 pt-5 border-t border-[#202421]/10">
-                  <h4 className="text-xs font-semibold tracking-wider text-[#153D32] mb-3">
+                <div className="mt-6 pt-5 border-t border-[var(--brand-ink)]/10">
+                  <h4 className="text-xs font-semibold tracking-wider text-[var(--brand-primary)] mb-3">
                     Standard Scope Considerations
                   </h4>
-                  <ul className="space-y-2 text-xs sm:text-sm text-[#202421]/85">
+                  <ul className="space-y-2 text-xs sm:text-sm text-[var(--brand-ink)]/85">
                     {activeServiceModal.scopeHighlights.map((item, idx) => (
                       <li key={idx} className="flex items-start gap-2.5">
-                        <Check className="w-4 h-4 text-[#153D32] shrink-0 mt-0.5" />
+                        <Check className="w-4 h-4 text-[var(--brand-primary)] shrink-0 mt-0.5" />
                         <span>{item}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="mt-5 p-4 bg-[#E9E6DF] rounded text-xs text-[#202421]/80">
+                <div className="mt-5 p-4 bg-[var(--brand-surface)] rounded text-xs text-[var(--brand-ink)]/80">
                   <strong>Architectural Surface Protocol:</strong>{' '}
                   {activeServiceModal.surfaceCareNotes}
                 </div>
@@ -1320,7 +1459,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => setActiveServiceModal(null)}
-                    className="px-4 py-2.5 border border-[#202421]/25 text-xs font-medium rounded hover:border-[#202421] cursor-pointer"
+                    className="px-4 py-2.5 border border-[var(--brand-ink)]/25 text-xs font-medium rounded hover:border-[var(--brand-ink)] cursor-pointer"
                   >
                     Close
                   </button>
@@ -1331,7 +1470,7 @@ export default function App() {
                       setActiveServiceModal(null);
                       openBookNowPage(chosen);
                     }}
-                    className="px-6 py-2.5 bg-[#153D32] text-[#F7F5F0] text-xs font-semibold tracking-wider rounded hover:bg-[#102E26] cursor-pointer"
+                    className="px-6 py-2.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-wider rounded hover:bg-[var(--brand-primary-hover)] cursor-pointer"
                   >
                     Request a Quote for This Service
                   </button>
@@ -1341,16 +1480,16 @@ export default function App() {
           </div>
         )}
 
-        {/* PRIVACY POLICY & TERMS OF SERVICE MODAL (Includes Google Maps Platform End User Terms disclosure) */}
+        {/* PRIVACY POLICY & TERMS OF SERVICE MODAL */}
         {legalModal && (
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="legal-modal-title"
-            className="fixed inset-0 z-50 bg-[#202421]/75 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6"
+            className="fixed inset-0 z-50 bg-[var(--brand-ink)]/75 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6"
           >
-            <div className="bg-[#F7F5F0] text-[#202421] border border-[#202421]/20 rounded-lg max-w-xl w-full p-6 sm:p-8 shadow-2xl">
-              <div className="flex items-center justify-between pb-4 border-b border-[#202421]/10">
+            <div className="bg-[var(--brand-canvas)] text-[var(--brand-ink)] border border-[var(--brand-ink)]/20 rounded-lg max-w-xl w-full p-6 sm:p-8 shadow-2xl">
+              <div className="flex items-center justify-between pb-4 border-b border-[var(--brand-ink)]/10">
                 <h3 id="legal-modal-title" className="font-serif-display text-2xl font-medium">
                   {legalModal === 'privacy' ? 'Privacy Policy' : 'Terms of Service'}
                 </h3>
@@ -1358,13 +1497,13 @@ export default function App() {
                   type="button"
                   onClick={() => setLegalModal(null)}
                   aria-label="Close modal"
-                  className="p-1.5 text-[#202421]/70 hover:text-[#202421] cursor-pointer"
+                  className="p-1.5 text-[var(--brand-ink)]/70 hover:text-[var(--brand-ink)] cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="mt-4 space-y-3 text-xs sm:text-sm text-[#202421]/80 leading-relaxed max-h-[60vh] overflow-y-auto pr-1">
+              <div className="mt-4 space-y-3 text-xs sm:text-sm text-[var(--brand-ink)]/80 leading-relaxed max-h-[60vh] overflow-y-auto pr-1">
                 {legalModal === 'privacy' ? (
                   <>
                     <p>
@@ -1381,7 +1520,7 @@ export default function App() {
                         href="https://policies.google.com/privacy?utm_campaign=gmp_mcp_codeassist_v1_aistudio"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="underline text-[#153D32]"
+                        className="underline text-[var(--brand-primary)]"
                       >
                         Google Privacy Policy
                       </a>
@@ -1403,7 +1542,7 @@ export default function App() {
                         href="https://maps.google.com/help/terms_maps/?utm_campaign=gmp_mcp_codeassist_v1_aistudio"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="underline text-[#153D32]"
+                        className="underline text-[var(--brand-primary)]"
                       >
                         Google Maps/Google Earth Additional Terms of Service
                       </a>
@@ -1413,11 +1552,11 @@ export default function App() {
                 )}
               </div>
 
-              <div className="mt-6 pt-4 border-t border-[#202421]/10 flex justify-end">
+              <div className="mt-6 pt-4 border-t border-[var(--brand-ink)]/10 flex justify-end">
                 <button
                   type="button"
                   onClick={() => setLegalModal(null)}
-                  className="px-5 py-2.5 bg-[#153D32] text-[#F7F5F0] text-xs font-semibold rounded cursor-pointer"
+                  className="px-5 py-2.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold rounded cursor-pointer"
                 >
                   Close
                 </button>

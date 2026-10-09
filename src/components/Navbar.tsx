@@ -40,8 +40,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-200 ${
         solidHeader
-          ? 'bg-[#F7F5F0]/95 backdrop-blur-md border-b border-[#202421]/10 text-[#202421]'
-          : 'bg-transparent border-b border-[#F7F5F0]/15 text-[#F7F5F0]'
+          ? 'bg-[var(--brand-canvas)]/95 backdrop-blur-md border-b border-[var(--brand-ink)]/10 text-[var(--brand-ink)]'
+          : 'bg-transparent border-b border-[var(--brand-canvas)]/15 text-[var(--brand-canvas)]'
       }`}
     >
       <div className="max-w-[1360px] mx-auto px-6 md:px-10 h-20 flex items-center justify-between gap-8">
@@ -49,7 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <a
           href="#top"
           onClick={(e) => handleNavClick(e, 'top')}
-          className="font-serif-display text-xl md:text-2xl font-semibold tracking-[0.14em] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C6A66B]"
+          className="font-serif-display text-xl md:text-2xl font-semibold tracking-[0.14em] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--brand-accent)]"
         >
           AUREL CLEANING CO.
         </a>
@@ -64,8 +64,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={(e) => handleNavClick(e, 'top')}
             className={`whitespace-nowrap shrink-0 py-1 border-b-2 transition-colors duration-150 ${
               activePage === 'home'
-                ? 'border-[#C6A66B]'
-                : 'border-transparent hover:border-[#C6A66B]/60'
+                ? 'border-[var(--brand-accent)]'
+                : 'border-transparent hover:border-[var(--brand-accent)]/60'
             }`}
           >
             Home
@@ -73,21 +73,21 @@ export const Navbar: React.FC<NavbarProps> = ({
           <a
             href="#services"
             onClick={(e) => handleNavClick(e, 'services')}
-            className="whitespace-nowrap shrink-0 py-1 border-b-2 border-transparent hover:border-[#C6A66B] transition-colors duration-150"
+            className="whitespace-nowrap shrink-0 py-1 border-b-2 border-transparent hover:border-[var(--brand-accent)] transition-colors duration-150"
           >
             Services
           </a>
           <a
             href="#approach"
             onClick={(e) => handleNavClick(e, 'approach')}
-            className="whitespace-nowrap shrink-0 py-1 border-b-2 border-transparent hover:border-[#C6A66B] transition-colors duration-150"
+            className="whitespace-nowrap shrink-0 py-1 border-b-2 border-transparent hover:border-[var(--brand-accent)] transition-colors duration-150"
           >
             Our Approach
           </a>
           <a
             href="#california-map"
             onClick={(e) => handleNavClick(e, 'california-map')}
-            className="whitespace-nowrap shrink-0 py-1 border-b-2 border-transparent hover:border-[#C6A66B] transition-colors duration-150"
+            className="whitespace-nowrap shrink-0 py-1 border-b-2 border-transparent hover:border-[var(--brand-accent)] transition-colors duration-150"
           >
             California Map
           </a>
@@ -96,8 +96,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={(e) => handleNavClick(e, 'book-now')}
             className={`whitespace-nowrap shrink-0 py-1 border-b-2 transition-colors duration-150 ${
               activePage === 'book'
-                ? 'border-[#C6A66B] font-semibold'
-                : 'border-transparent hover:border-[#C6A66B]'
+                ? 'border-[var(--brand-accent)] font-semibold'
+                : 'border-transparent hover:border-[var(--brand-accent)]'
             }`}
           >
             Book Now
@@ -114,8 +114,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             }}
             className={`hidden sm:inline-flex items-center justify-center px-5 py-2.5 text-xs font-semibold tracking-[0.12em] rounded transition-all duration-150 whitespace-nowrap shrink-0 cursor-pointer ${
               solidHeader
-                ? 'bg-[#153D32] text-[#F7F5F0] hover:bg-[#102E26]'
-                : 'bg-[#F7F5F0] text-[#153D32] hover:bg-[#E9E6DF]'
+                ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)] hover:bg-[var(--brand-primary-hover)]'
+                : 'bg-[var(--brand-canvas)] text-[var(--brand-primary)] hover:bg-[var(--brand-surface)]'
             }`}
           >
             Request a Quote
@@ -126,7 +126,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            className="lg:hidden p-2.5 rounded focus-visible:outline-2 focus-visible:outline-[#C6A66B] cursor-pointer"
+            className="lg:hidden p-2.5 rounded focus-visible:outline-2 focus-visible:outline-[var(--brand-accent)] cursor-pointer"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -135,47 +135,47 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Responsive Mobile Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#F7F5F0] border-b border-[#202421]/15 text-[#202421] px-6 py-6 shadow-lg">
+        <div className="lg:hidden bg-[var(--brand-canvas)] border-b border-[var(--brand-ink)]/15 text-[var(--brand-ink)] px-6 py-6 shadow-lg">
           <nav className="flex flex-col space-y-4 text-base font-medium" aria-label="Mobile Navigation">
             <a
               href="#top"
               onClick={(e) => handleNavClick(e, 'top')}
-              className="py-2 border-b border-[#202421]/10 flex items-center justify-between"
+              className="py-2 border-b border-[var(--brand-ink)]/10 flex items-center justify-between"
             >
               <span>Home</span>
             </a>
             <a
               href="#services"
               onClick={(e) => handleNavClick(e, 'services')}
-              className="py-2 border-b border-[#202421]/10 flex items-center justify-between"
+              className="py-2 border-b border-[var(--brand-ink)]/10 flex items-center justify-between"
             >
               <span>Services</span>
             </a>
             <a
               href="#approach"
               onClick={(e) => handleNavClick(e, 'approach')}
-              className="py-2 border-b border-[#202421]/10 flex items-center justify-between"
+              className="py-2 border-b border-[var(--brand-ink)]/10 flex items-center justify-between"
             >
               <span>Our Approach</span>
             </a>
             <a
               href="#about"
               onClick={(e) => handleNavClick(e, 'about')}
-              className="py-2 border-b border-[#202421]/10 flex items-center justify-between"
+              className="py-2 border-b border-[var(--brand-ink)]/10 flex items-center justify-between"
             >
               <span>About Us</span>
             </a>
             <a
               href="#california-map"
               onClick={(e) => handleNavClick(e, 'california-map')}
-              className="py-2 border-b border-[#202421]/10 flex items-center justify-between"
+              className="py-2 border-b border-[var(--brand-ink)]/10 flex items-center justify-between"
             >
               <span>California Service Map</span>
             </a>
             <a
               href="#contact"
               onClick={(e) => handleNavClick(e, 'contact')}
-              className="py-2 border-b border-[#202421]/10 flex items-center justify-between"
+              className="py-2 border-b border-[var(--brand-ink)]/10 flex items-center justify-between"
             >
               <span>Contact</span>
             </a>
@@ -186,7 +186,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   setMobileMenuOpen(false);
                   onOpenBookPage();
                 }}
-                className="w-full py-3 px-5 bg-[#153D32] text-[#F7F5F0] text-sm font-semibold tracking-wider rounded text-center cursor-pointer"
+                className="w-full py-3 px-5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-sm font-semibold tracking-wider rounded text-center cursor-pointer"
               >
                 Book Now / Request a Quote
               </button>
