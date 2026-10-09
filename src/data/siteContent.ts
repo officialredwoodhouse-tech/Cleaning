@@ -1,3 +1,13 @@
+import heroPenthouseImg from '../assets/images/hero_luxury_penthouse_1791553702051.jpg';
+import residentialKitchenImg from '../assets/images/service_residential_kitchen_1791553713789.jpg';
+import commercialAtelierImg from '../assets/images/service_commercial_atelier_1791553727175.jpg';
+import marbleSuiteImg from '../assets/images/comparison_marble_suite_1791553750538.jpg';
+import teamUniformPhotoshootImg from '../assets/images/team_uniform_photoshoot_1791558176985.jpg';
+import cleaningToolsKitImg from '../assets/images/cleaning_tools_kit_1791558190744.jpg';
+import agencyEquipmentArsenalImg from '../assets/images/agency_equipment_arsenal_1791558784491.jpg';
+import beverlyHillsVillaImg from '../assets/images/property_beverly_hills_villa_1791560311793.jpg';
+import malibuOceanfrontImg from '../assets/images/property_malibu_oceanfront_1791560323217.jpg';
+
 export interface ServiceItem {
   id: string;
   number: string;
@@ -101,15 +111,15 @@ export interface FeaturedPropertyItem {
 }
 
 export const BRAND_IMAGES = {
-  heroPenthouse: '/src/assets/images/hero_luxury_penthouse_1791553702051.jpg',
-  residentialKitchen: '/src/assets/images/service_residential_kitchen_1791553713789.jpg',
-  commercialAtelier: '/src/assets/images/service_commercial_atelier_1791553727175.jpg',
-  marbleSuite: '/src/assets/images/comparison_marble_suite_1791553750538.jpg',
-  teamUniformPhotoshoot: '/src/assets/images/team_uniform_photoshoot_1791558176985.jpg',
-  cleaningToolsKit: '/src/assets/images/cleaning_tools_kit_1791558190744.jpg',
-  agencyEquipmentArsenal: '/src/assets/images/agency_equipment_arsenal_1791558784491.jpg',
-  beverlyHillsVilla: '/src/assets/images/property_beverly_hills_villa_1791560311793.jpg',
-  malibuOceanfront: '/src/assets/images/property_malibu_oceanfront_1791560323217.jpg',
+  heroPenthouse: heroPenthouseImg,
+  residentialKitchen: residentialKitchenImg,
+  commercialAtelier: commercialAtelierImg,
+  marbleSuite: marbleSuiteImg,
+  teamUniformPhotoshoot: teamUniformPhotoshootImg,
+  cleaningToolsKit: cleaningToolsKitImg,
+  agencyEquipmentArsenal: agencyEquipmentArsenalImg,
+  beverlyHillsVilla: beverlyHillsVillaImg,
+  malibuOceanfront: malibuOceanfrontImg,
 };
 
 export const FEATURED_PROPERTIES: FeaturedPropertyItem[] = [
