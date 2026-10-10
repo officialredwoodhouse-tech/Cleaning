@@ -1,3 +1,4 @@
+import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
 import express from 'express';
 import fs from 'fs';
@@ -6,6 +7,43 @@ import { fileURLToPath } from 'url';
 import { createServer as createViteServer } from 'vite';
 
 dotenv.config();
+
+function getGeminiClient(): GoogleGenAI {
+  return new GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY,
+    httpOptions: {
+      headers: {
+        'User-Agent': 'aistudio-build',
+      },
+    },
+  });
+}
+
+const OPS_ROLE_INSTRUCTIONS: Record<string, string> = {
+  concierge: `You are "Ops", the California Client Concierge for AUREL CLEANING CO. ("Exceptional Spaces. Impeccable Standards.").
+Your role is to assist affluent homeowners, estate managers, real estate advisors, and commercial studio directors across California (Beverly Hills, Bel Air, Malibu, Pacific Palisades, Montecito, Santa Barbara, Newport Beach, La Jolla, San Francisco Pacific Heights, Palo Alto / Atherton, and Napa Valley).
+Key brand facts:
+- Services: 1) Luxury Residential Cleaning, 2) Deep Cleaning, 3) Move-In & Move-Out Cleaning, 4) Commercial Cleaning, 5) Post-Construction Cleaning, 6) Recurring Maintenance Cleaning.
+- Service Plan Tiers: Essential Care (regular upkeep), Signature Clean (comprehensive architectural detailing), and Bespoke Property Care (custom protocols for estates, penthouses, and multi-property portfolios).
+- Pricing policy: Never invent flat dollar prices. Explain that quotes are tailored to square footage, architectural materials, condition, and frequency via the 4-step Book Now page.
+- Team & Equipment: Coordinated uniformed specialists in midnight-navy collared shirts, scratch-free slate linen aprons, indoor soft-sole shoes, and detailing gloves, equipped with commercial stainless HEPA H14 vacuums, solid brass squeegees, horsehair brushes, and pH-neutral stone/wood formulations.
+Keep responses poised, warm, concise (2-4 sentences or clean bullet points), and hospitality-driven.`,
+
+  surfaces: `You are "Ops (Surface & Material Specialist)", the Architectural Surface Care Advisor for AUREL CLEANING CO. in California.
+Your role is to advise clients on how Aurel protects and details delicate luxury materials:
+- Natural Stone (honed Calacatta/Carrara marble, travertine, limestone): Strictly pH-neutral, non-acidic formulations and two-stage dry microfiber buffing—never vinegar, lemon, bleach, or abrasive pads.
+- Wide-Plank European Oak & Custom Millwork (walnut, cedar soffits): Moisture-controlled conditioning and soft natural horsehair/boar-bristle brush dusting along architectural reveals.
+- Coastal & Architectural Glass (Malibu oceanfront glass, motorized pocket sliders, Starphire steam showers): Deionized water, medical-grade rubber solid brass squeegees, and recessed track extraction.
+- Post-Construction Fine Dust: 3-phase commercial HEPA H14 filtration inside cabinetry, lighting coves, and air diffusers.
+Keep answers authoritative, precise, and concise (2-4 sentences).`,
+
+  operations: `You are "Ops (Estate & Commercial Operations)", the Operations & Scheduling Coordinator for AUREL CLEANING CO. across California.
+Your role is to help estate managers, real estate agents, and corporate/studio directors plan logistics:
+- Multi-specialist uniformed team deployments, NDA/discreet access protocols, and coordination with household staff or interior designers.
+- Commercial after-hours, early-morning, or daytime porter schedules for executive boardrooms, architectural ateliers, art galleries, and family offices.
+- Turnkey Move-In/Move-Out and Post-Construction handover timelines.
+Keep responses structured, practical, and concise (2-4 sentences), inviting them to log their property specifications on the Book Now page.`,
+};
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -190,54 +228,127 @@ async function startServer() {
     }
   });
 
-  // Live Concierge Chat Desk endpoint
-  app.post('/api/concierge', (req, res) => {
-    const { message, currentRegion } = req.body || {};
-    const text = String(message || '').toLowerCase();
+  // Ops — Multi-Turn Gemini AI Concierge Chat endpoint
+  app.post('/api/concierge', async (req, res) => {
+    const { message, history, persona = 'concierge', speedMode = 'standard', currentRegion } =
+      req.body || {};
+    const userText = String(message || '').trim();
 
-    let reply =
-      'Thank you for reaching out to the Aurel California Concierge Desk. Every cleaning plan is tailored to the architecture, surfaces, and schedule of your property. Would you like to book a walk-through or request a personalized quote on our Book Now page?';
-    let suggestedAction: 'open_book_page' | 'view_map' | 'view_services' | null = 'open_book_page';
-
-    if (text.includes('price') || text.includes('cost') || text.includes('rate') || text.includes('quote')) {
-      reply =
-        'Because luxury residences and commercial properties vary in architectural finishes, square footage, and frequency, we do not use arbitrary flat pricing. We offer three tailored care tiers—Essential Care, Signature Clean, and Bespoke Property Care—and provide a custom quote via our Book Now page.';
-      suggestedAction = 'open_book_page';
-    } else if (
-      text.includes('california') ||
-      text.includes('area') ||
-      text.includes('location') ||
-      text.includes('beverly') ||
-      text.includes('san francisco') ||
-      text.includes('malibu') ||
-      text.includes('palo alto') ||
-      text.includes('newport') ||
-      text.includes('la jolla') ||
-      text.includes('santa barbara')
-    ) {
-      reply = `Aurel Cleaning Co. serves premier residential and commercial properties across California${
-        currentRegion ? `, including ${currentRegion}` : ''
-      }—spanning Beverly Hills & the Westside, Malibu, Santa Barbara & Montecito, Newport Coast, La Jolla, San Francisco, Silicon Valley, and Napa Valley. You can verify your exact California address on our interactive map or Book Now page.`;
-      suggestedAction = 'view_map';
-    } else if (text.includes('marble') || text.includes('stone') || text.includes('supply') || text.includes('product')) {
-      reply =
-        'We take particular care with sensitive architectural surfaces including honed Calacatta marble, travertine, unlacquered brass, and wide-plank hardwood. During your consultation or in Step 3 of our Book Now form, you can specify any surface treatments or preferred household products.';
-      suggestedAction = 'open_book_page';
-    } else if (text.includes('commercial') || text.includes('office') || text.includes('gallery') || text.includes('hotel')) {
-      reply =
-        'Our Commercial Cleaning division supports executive offices, architectural studios, private showrooms, and boutique hospitality spaces across California with discreet scheduling outside or alongside your operating hours.';
-      suggestedAction = 'view_services';
-    } else if (text.includes('move') || text.includes('construction') || text.includes('renovation')) {
-      reply =
-        'We offer specialized Move-In / Move-Out Cleaning and Post-Construction Detailing designed for luxury property handovers, fine dust removal, and pre-occupancy preparation.';
-      suggestedAction = 'open_book_page';
+    if (!userText) {
+      return res.status(400).json({ error: 'Please enter a message for Ops.' });
     }
 
-    res.json({
-      reply,
-      suggestedAction,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    });
+    const lower = userText.toLowerCase();
+    let suggestedAction:
+      | 'open_book_page'
+      | 'view_map'
+      | 'view_services'
+      | 'view_properties'
+      | null = 'open_book_page';
+
+    if (
+      lower.includes('map') ||
+      lower.includes('area') ||
+      lower.includes('california') ||
+      lower.includes('beverly') ||
+      lower.includes('malibu') ||
+      lower.includes('francisco') ||
+      lower.includes('montecito')
+    ) {
+      suggestedAction = 'view_map';
+    } else if (lower.includes('propert') || lower.includes('estate') || lower.includes('villa') || lower.includes('penthouse')) {
+      suggestedAction = 'view_properties';
+    } else if (lower.includes('service') || lower.includes('commercial') || lower.includes('office')) {
+      suggestedAction = 'view_services';
+    }
+
+    // Select model based on speedMode ('gemini-3.1-flash-lite' for fast, 'gemini-3.8-flash' for general)
+    const selectedModel =
+      speedMode === 'fast' ? 'gemini-3.1-flash-lite' : 'gemini-3.8-flash';
+
+    const baseInstruction =
+      OPS_ROLE_INSTRUCTIONS[String(persona)] || OPS_ROLE_INSTRUCTIONS.concierge;
+    const systemInstruction = currentRegion
+      ? `${baseInstruction}\nThe client is currently viewing or inquiring from: ${currentRegion}.`
+      : baseInstruction;
+
+    // Build multi-turn contents array from prior conversation history + new user turn
+    const safeHistory = Array.isArray(history) ? history.slice(-16) : [];
+    const contents: Array<{ role: 'user' | 'model'; parts: Array<{ text: string }> }> = [];
+
+    for (const turn of safeHistory) {
+      if (!turn || typeof turn.text !== 'string' || !turn.text.trim()) continue;
+      const role: 'user' | 'model' = turn.role === 'model' ? 'model' : 'user';
+      // Ensure alternating or valid role sequence starting with 'user'
+      if (contents.length === 0 && role === 'model') continue;
+      if (contents.length > 0 && contents[contents.length - 1].role === role) {
+        contents[contents.length - 1].parts[0].text += `\n${turn.text.trim()}`;
+      } else {
+        contents.push({
+          role,
+          parts: [{ text: turn.text.trim() }],
+        });
+      }
+    }
+
+    if (contents.length > 0 && contents[contents.length - 1].role === 'user') {
+      contents[contents.length - 1].parts[0].text += `\n${userText}`;
+    } else {
+      contents.push({
+        role: 'user',
+        parts: [{ text: userText }],
+      });
+    }
+
+    try {
+      const ai = getGeminiClient();
+      const response = await ai.models.generateContent({
+        model: selectedModel,
+        contents,
+        config: {
+          systemInstruction,
+          temperature: 0.65,
+        },
+      });
+
+      const replyText =
+        response.text?.trim() ||
+        'Thank you for reaching out to Ops at Aurel Cleaning Co. Would you like to request a tailored quote on our Book Now page?';
+
+      return res.json({
+        reply: replyText,
+        suggestedAction,
+        modelUsed: selectedModel,
+        personaUsed: persona,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      });
+    } catch (err: unknown) {
+      console.error('Gemini API error in /api/concierge:', err);
+      const errMessage = err instanceof Error ? err.message : String(err);
+
+      if (
+        errMessage.includes('API_KEY_INVALID') ||
+        errMessage.includes('PERMISSION_DENIED') ||
+        errMessage.includes('403') ||
+        errMessage.includes('400')
+      ) {
+        return res.status(502).json({
+          error:
+            'Unable to reach Ops AI right now. Please check that your GEMINI_API_KEY is configured in the Settings > Secrets panel.',
+        });
+      }
+
+      if (errMessage.includes('RESOURCE_EXHAUSTED') || errMessage.includes('429')) {
+        return res.status(429).json({
+          error:
+            'Ops AI rate limit reached. Upgrading to a billing-enabled API key in Settings > Secrets increases quota.',
+        });
+      }
+
+      return res.status(500).json({
+        error: 'Ops encountered a temporary connection issue. Please try sending your message again.',
+      });
+    }
   });
 
   // Newsletter signup endpoint
