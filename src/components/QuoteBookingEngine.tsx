@@ -573,25 +573,25 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
   const isCommercial = formData.serviceType === 'Commercial Cleaning';
 
   return (
-    <div className="bg-[var(--brand-canvas)] border border-[var(--brand-ink)]/15 rounded-lg p-6 sm:p-8 md:p-10">
+    <div className="bg-[var(--brand-canvas)] border border-[var(--brand-ink)]/15 rounded-lg p-4 sm:p-8 md:p-10">
       {/* Step Progress Header */}
-      <div className="pb-6 border-b border-[var(--brand-ink)]/10">
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+      <div className="pb-5 sm:pb-6 border-b border-[var(--brand-ink)]/10">
+        <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
           <span className="text-xs font-mono-tabular font-medium text-[var(--brand-primary)]">
             Step 0{step} of 04
           </span>
-          <span className="text-xs text-[var(--brand-ink)]/60">
+          <span className="text-[11px] sm:text-xs text-[var(--brand-ink)]/60">
             Draft automatically saved · California Properties
           </span>
         </div>
 
-        {/* 4-Step Interactive Progress Indicators */}
+        {/* 4-Step Interactive Progress Indicators (Concise labels on mobile, 48px touch targets) */}
         <div className="grid grid-cols-4 gap-2 sm:gap-4" role="list" aria-label="Quote request steps">
           {[
-            { num: 1, title: 'Select Service' },
-            { num: 2, title: 'Property Details' },
-            { num: 3, title: 'Preferences' },
-            { num: 4, title: 'Contact Info' },
+            { num: 1, title: 'Select Service', shortTitle: 'Service' },
+            { num: 2, title: 'Property Details', shortTitle: 'Property' },
+            { num: 3, title: 'Preferences', shortTitle: 'Schedule' },
+            { num: 4, title: 'Contact Info', shortTitle: 'Contact' },
           ].map((item) => {
             const isActive = step === item.num;
             const isCompleted = step > item.num;
@@ -604,7 +604,7 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                     setStep(item.num);
                   }
                 }}
-                className={`text-left pt-2.5 border-t-2 transition-colors cursor-pointer ${
+                className={`text-left pt-2 pb-1 min-h-[48px] border-t-2 transition-colors cursor-pointer ${
                   isActive
                     ? 'border-[var(--brand-primary)] text-[var(--brand-primary)]'
                     : isCompleted
@@ -612,8 +612,13 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
                     : 'border-[var(--brand-ink)]/15 text-[var(--brand-ink)]/45'
                 }`}
               >
-                <span className="block text-[11px] font-mono-tabular">0{item.num}</span>
-                <span className="block text-xs sm:text-sm font-medium truncate mt-0.5">
+                <span className="block text-[10px] sm:text-[11px] font-mono-tabular">
+                  0{item.num}
+                </span>
+                <span className="block sm:hidden text-xs font-medium truncate mt-0.5">
+                  {item.shortTitle}
+                </span>
+                <span className="hidden sm:block text-sm font-medium truncate mt-0.5">
                   {item.title}
                 </span>
               </button>
@@ -1161,18 +1166,18 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
         )}
 
         {/* Navigation Buttons */}
-        <div className="mt-8 pt-6 border-t border-[var(--brand-ink)]/10 flex items-center justify-between gap-4">
+        <div className="mt-8 pt-6 border-t border-[var(--brand-ink)]/10 flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           {step > 1 ? (
             <button
               type="button"
               onClick={handlePrevStep}
-              className="px-5 py-3 bg-transparent border border-[var(--brand-ink)]/25 text-[var(--brand-ink)] text-xs font-semibold tracking-[0.12em] rounded hover:border-[var(--brand-ink)] transition-colors flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
+              className="w-full sm:w-auto min-h-[48px] px-5 py-3 bg-transparent border border-[var(--brand-ink)]/25 text-[var(--brand-ink)] text-xs font-semibold tracking-[0.12em] rounded hover:border-[var(--brand-ink)] transition-colors flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Previous Step</span>
             </button>
           ) : (
-            <div className="text-xs text-[var(--brand-ink)]/60">
+            <div className="text-xs text-[var(--brand-ink)]/60 text-center sm:text-left">
               Final pricing depends on property scope and requested service.
             </div>
           )}
@@ -1181,16 +1186,16 @@ export const QuoteBookingEngine: React.FC<QuoteBookingEngineProps> = ({
             <button
               type="button"
               onClick={handleNextStep}
-              className="px-6 py-3.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[var(--brand-primary-hover)] transition-colors flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
+              className="w-full sm:w-auto min-h-[48px] px-6 py-3.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded hover:bg-[var(--brand-primary-hover)] transition-colors flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
             >
-              <span>Continue</span>
+              <span>Continue to Step 0{step + 1}</span>
               <ArrowRight className="w-4 h-4 text-[var(--brand-accent)]" />
             </button>
           ) : (
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-7 py-3.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.14em] rounded hover:bg-[var(--brand-primary-hover)] disabled:opacity-60 transition-colors flex items-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
+              className="w-full sm:w-auto min-h-[48px] px-7 py-3.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.14em] rounded hover:bg-[var(--brand-primary-hover)] disabled:opacity-60 transition-colors flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap shrink-0"
             >
               <span>{isSubmitting ? 'Submitting Request...' : 'Request My Quote'}</span>
               <ArrowRight className="w-4 h-4 text-[var(--brand-accent)]" />

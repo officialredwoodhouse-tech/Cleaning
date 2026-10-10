@@ -358,7 +358,7 @@ export default function App() {
             {/* 4. HERO SECTION */}
             <section
               aria-label="Hero Introduction"
-              className="relative min-h-[92vh] flex items-center pt-28 pb-16 overflow-hidden bg-[var(--brand-primary)]"
+              className="relative min-h-[88vh] sm:min-h-[92vh] flex items-center pt-20 sm:pt-28 pb-12 sm:pb-16 overflow-hidden bg-[var(--brand-primary)]"
             >
               {/* Full-width High-Resolution Photograph of an Immaculate Luxury Residence */}
               <div className="absolute inset-0 z-0">
@@ -373,8 +373,8 @@ export default function App() {
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--brand-primary)]/90 via-transparent to-[var(--brand-ink)]/35" />
               </div>
 
-              <div className="relative z-10 max-w-[1360px] mx-auto px-6 md:px-10 w-full">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+              <div className="relative z-10 max-w-[1360px] mx-auto px-4 sm:px-6 md:px-10 w-full">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-12 items-center">
                   {/* Left 7 Columns: Editorial Headline & CTAs */}
                   <div className="lg:col-span-7">
                     {/* Quiet Unboxed Eyebrow */}
@@ -382,7 +382,7 @@ export default function App() {
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                      className="text-xs sm:text-sm font-medium tracking-[0.18em] text-[var(--brand-accent)] mb-5"
+                      className="text-[11px] sm:text-sm font-medium tracking-[0.14em] sm:tracking-[0.18em] text-[var(--brand-accent)] mb-3.5 sm:mb-5"
                     >
                       Premium Residential & Commercial Cleaning Agency · California
                     </motion.p>
@@ -392,7 +392,7 @@ export default function App() {
                       initial={{ opacity: 0, y: 16 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.65, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-                      className="font-serif-display text-4xl sm:text-6xl lg:text-[60px] font-normal text-[var(--brand-canvas)] leading-[1.06] tracking-wide"
+                      className="font-serif-display text-3xl sm:text-6xl lg:text-[60px] font-normal text-[var(--brand-canvas)] leading-[1.08] tracking-wide"
                     >
                       Luxury Begins With a Space That Feels Perfect.
                     </motion.h1>
@@ -402,24 +402,24 @@ export default function App() {
                       initial={{ opacity: 0, y: 16 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.65, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
-                      className="mt-6 text-base sm:text-lg text-[var(--brand-canvas)]/90 leading-relaxed max-w-2xl"
+                      className="mt-4 sm:mt-6 text-sm sm:text-lg text-[var(--brand-canvas)]/90 leading-relaxed max-w-2xl"
                     >
                       Exceptional cleaning for exceptional spaces. Experience meticulous attention
                       to detail, uniformed specialist teams, bespoke surface tools, and standards
                       designed around your lifestyle.
                     </motion.p>
 
-                    {/* Primary & Secondary CTAs */}
+                    {/* Primary & Secondary CTAs (Thumb-Optimized Grid on Phones) */}
                     <motion.div
                       initial={{ opacity: 0, y: 16 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.65, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
-                      className="mt-9 flex flex-wrap items-center gap-4"
+                      className="mt-7 sm:mt-9 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-4"
                     >
                       <button
                         type="button"
                         onClick={() => openBookNowPage()}
-                        className="px-7 py-4 bg-[var(--brand-accent)] text-[var(--brand-ink)] text-xs font-semibold tracking-[0.14em] rounded hover:bg-[var(--brand-accent-hover)] transition-colors flex items-center gap-2.5 cursor-pointer whitespace-nowrap shrink-0"
+                        className="min-h-[48px] px-6 sm:px-7 py-3.5 sm:py-4 bg-[var(--brand-accent)] text-[var(--brand-ink)] text-xs font-semibold tracking-[0.14em] rounded hover:bg-[var(--brand-accent-hover)] transition-colors flex items-center justify-center gap-2.5 cursor-pointer whitespace-nowrap shrink-0"
                       >
                         <span>Book Your Cleaning</span>
                         <ArrowRight className="w-4 h-4" />
@@ -431,28 +431,31 @@ export default function App() {
                           e.preventDefault();
                           navigateToHomeSection('about');
                         }}
-                        className="px-7 py-4 bg-transparent border border-[var(--brand-canvas)]/40 text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.14em] rounded hover:border-[var(--brand-canvas)] hover:bg-[var(--brand-canvas)]/10 transition-colors whitespace-nowrap shrink-0"
+                        className="min-h-[48px] px-6 sm:px-7 py-3.5 sm:py-4 bg-transparent border border-[var(--brand-canvas)]/40 text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.14em] rounded hover:border-[var(--brand-canvas)] hover:bg-[var(--brand-canvas)]/10 transition-colors flex items-center justify-center whitespace-nowrap shrink-0"
                       >
                         Our Team & Tools Lookbook
                       </a>
 
-                      <a
-                        href={BUSINESS_CONTACT_PLACEHOLDERS.mailtoHref}
-                        className="px-5 py-4 bg-[var(--brand-canvas)]/10 border border-[var(--brand-canvas)]/30 text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded hover:border-[var(--brand-accent)] hover:text-[var(--brand-accent)] transition-colors inline-flex items-center gap-2 whitespace-nowrap shrink-0"
-                      >
-                        <Mail className="w-4 h-4 text-[var(--brand-accent)]" />
-                        <span>Email Us</span>
-                      </a>
+                      <div className="grid grid-cols-2 sm:flex items-center gap-3 sm:gap-4">
+                        <a
+                          href={BUSINESS_CONTACT_PLACEHOLDERS.mailtoHref}
+                          className="min-h-[46px] px-4 sm:px-5 py-3 bg-[var(--brand-canvas)]/10 border border-[var(--brand-canvas)]/30 text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.1em] sm:tracking-[0.12em] rounded hover:border-[var(--brand-accent)] hover:text-[var(--brand-accent)] transition-colors inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0"
+                        >
+                          <Mail className="w-4 h-4 text-[var(--brand-accent)] shrink-0" />
+                          <span>Email Us</span>
+                        </a>
 
-                      <a
-                        href={BUSINESS_CONTACT_PLACEHOLDERS.instagramUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-5 py-4 bg-[var(--brand-canvas)]/10 border border-[var(--brand-canvas)]/30 text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded hover:border-[var(--brand-accent)] hover:text-[var(--brand-accent)] transition-colors inline-flex items-center gap-2 whitespace-nowrap shrink-0"
-                      >
-                        <Instagram className="w-4 h-4 text-[var(--brand-accent)]" />
-                        <span>Connect on Instagram</span>
-                      </a>
+                        <a
+                          href={BUSINESS_CONTACT_PLACEHOLDERS.instagramUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="min-h-[46px] px-4 sm:px-5 py-3 bg-[var(--brand-canvas)]/10 border border-[var(--brand-canvas)]/30 text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.1em] sm:tracking-[0.12em] rounded hover:border-[var(--brand-accent)] hover:text-[var(--brand-accent)] transition-colors inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0"
+                        >
+                          <Instagram className="w-4 h-4 text-[var(--brand-accent)] shrink-0" />
+                          <span className="sm:hidden">Instagram</span>
+                          <span className="hidden sm:inline">Connect on Instagram</span>
+                        </a>
+                      </div>
                     </motion.div>
 
                     {/* Three Compact Trust Indicators */}
@@ -460,7 +463,7 @@ export default function App() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.7, delay: 0.34 }}
-                      className="mt-10 pt-6 border-t border-[var(--brand-canvas)]/20 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs sm:text-sm text-[var(--brand-surface)]/90"
+                      className="mt-8 sm:mt-10 pt-5 sm:pt-6 border-t border-[var(--brand-canvas)]/20 flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-2 text-xs sm:text-sm text-[var(--brand-surface)]/90"
                     >
                       <span>Uniformed Specialist Teams</span>
                       <span aria-hidden="true" className="text-[var(--brand-accent)]">
@@ -492,7 +495,7 @@ export default function App() {
                               aria-selected={isSelected}
                               type="button"
                               onClick={() => setHeroSlideIndex(idx)}
-                              className={`py-2 px-2 text-[11px] font-semibold rounded transition-colors cursor-pointer whitespace-nowrap truncate ${
+                              className={`min-h-[40px] py-2 px-1.5 sm:px-2 text-[11px] font-semibold rounded transition-colors cursor-pointer whitespace-nowrap truncate ${
                                 isSelected
                                   ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)]'
                                   : 'text-[var(--brand-ink)]/75 hover:text-[var(--brand-ink)]'
@@ -514,8 +517,8 @@ export default function App() {
                         />
                       </div>
 
-                      {/* Caption & Quick Link to Full 8-Photo Lookbook */}
-                      <div className="p-5 bg-[var(--brand-canvas)]">
+                      {/* Caption & Quick Link to Lookbook */}
+                      <div className="p-4 sm:p-5 bg-[var(--brand-canvas)]">
                         <p className="text-[11px] font-mono-tabular text-[var(--brand-primary)]">
                           0{heroSlideIndex + 1} / 0{heroShowcases.length} · {activeHeroShowcase.kicker}
                         </p>
@@ -532,7 +535,7 @@ export default function App() {
                               e.preventDefault();
                               navigateToHomeSection('about');
                             }}
-                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--brand-primary)] hover:text-[var(--brand-ink)] transition-colors whitespace-nowrap shrink-0"
+                            className="min-h-[40px] inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--brand-primary)] hover:text-[var(--brand-ink)] transition-colors whitespace-nowrap shrink-0"
                           >
                             <span>View Team Group Photo & Tools</span>
                             <ArrowDown className="w-3.5 h-3.5 text-[var(--brand-accent)]" />
@@ -542,7 +545,7 @@ export default function App() {
                             onClick={() =>
                               setHeroSlideIndex((prev) => (prev + 1) % heroShowcases.length)
                             }
-                            className="text-xs font-medium text-[var(--brand-ink)]/70 hover:text-[var(--brand-primary)] underline underline-offset-4 cursor-pointer whitespace-nowrap shrink-0"
+                            className="min-h-[40px] px-2 text-xs font-medium text-[var(--brand-ink)]/70 hover:text-[var(--brand-primary)] underline underline-offset-4 cursor-pointer whitespace-nowrap shrink-0"
                           >
                             Next Photo
                           </button>
@@ -553,7 +556,7 @@ export default function App() {
                 </div>
 
                 {/* Subtle Scroll Indicator & Interactive Color Palette Bar */}
-                <div className="mt-10 md:mt-12 flex flex-wrap items-center justify-between gap-4 text-xs text-[var(--brand-surface)]/75">
+                <div className="mt-8 sm:mt-10 md:mt-12 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs text-[var(--brand-surface)]/75">
                   <a
                     href="#about"
                     onClick={(e) => {
@@ -563,13 +566,13 @@ export default function App() {
                     className="inline-flex items-center gap-2 hover:text-[var(--brand-canvas)] transition-colors"
                   >
                     <span>Explore About Us, Uniform Dress Shoot & Tools Below</span>
-                    <ArrowDown className="w-3.5 h-3.5 text-[var(--brand-accent)]" />
+                    <ArrowDown className="w-3.5 h-3.5 text-[var(--brand-accent)] shrink-0" />
                   </a>
 
-                  {/* Curated California Color Palette Switcher */}
-                  <div className="flex flex-wrap items-center gap-2 bg-[var(--brand-ink)]/45 backdrop-blur-sm px-3.5 py-2 rounded-lg border border-[var(--brand-canvas)]/15">
-                    <Palette className="w-3.5 h-3.5 text-[var(--brand-accent)]" />
-                    <span className="text-[11px] text-[var(--brand-canvas)]/80 mr-1">
+                  {/* Curated California Color Palette Switcher (Swipeable on Phone) */}
+                  <div className="flex flex-nowrap sm:flex-wrap items-center gap-2 bg-[var(--brand-ink)]/45 backdrop-blur-sm px-3 py-2 rounded-lg border border-[var(--brand-canvas)]/15 overflow-x-auto no-scrollbar max-w-full">
+                    <Palette className="w-3.5 h-3.5 text-[var(--brand-accent)] shrink-0" />
+                    <span className="text-[11px] text-[var(--brand-canvas)]/80 mr-1 shrink-0">
                       Palette:
                     </span>
                     {LUXURY_THEMES.map((theme) => {
@@ -579,7 +582,7 @@ export default function App() {
                           key={theme.id}
                           type="button"
                           onClick={() => setActiveTheme(theme.id)}
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                          className={`min-h-[36px] inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                             isCurrent
                               ? 'bg-[var(--brand-canvas)] text-[var(--brand-ink)]'
                               : 'text-[var(--brand-canvas)]/75 hover:text-[var(--brand-canvas)]'
@@ -627,11 +630,11 @@ export default function App() {
             <section
               id="about"
               aria-labelledby="about-agency-heading"
-              className="py-24 md:py-32 bg-[var(--brand-canvas)] border-b border-[var(--brand-ink)]/10"
+              className="py-16 sm:py-24 md:py-32 bg-[var(--brand-canvas)] border-b border-[var(--brand-ink)]/10"
             >
-              <div className="max-w-[1360px] mx-auto px-6 md:px-10">
+              <div className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-10">
                 {/* Editorial Section Header + Interactive Lookbook Filter */}
-                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-14">
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 sm:gap-8 mb-10 sm:mb-14">
                   <div className="max-w-2xl">
                     <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)] mb-3">
                       About Our Agency · Our Team & Surface-Care Tools
@@ -642,7 +645,7 @@ export default function App() {
                     >
                       Dressed for Discretion. Equipped for Precision.
                     </h2>
-                    <p className="mt-4 text-base text-[var(--brand-ink)]/80 leading-relaxed">
+                    <p className="mt-3 sm:mt-4 text-sm sm:text-base text-[var(--brand-ink)]/80 leading-relaxed">
                       Aurel Cleaning Co. operates with the poise of a private hospitality team. Meet
                       our coordinated California specialist team in a single group portrait and
                       explore the professional HEPA H14 and surface-care equipment we bring to every
@@ -654,7 +657,7 @@ export default function App() {
                   <div
                     role="tablist"
                     aria-label="Filter agency team group photo and equipment kits"
-                    className="flex flex-wrap items-center gap-1.5 p-1.5 bg-[var(--brand-surface)] border border-[var(--brand-ink)]/10 rounded-lg self-start"
+                    className="flex flex-nowrap sm:flex-wrap items-center gap-1.5 p-1.5 bg-[var(--brand-surface)] border border-[var(--brand-ink)]/10 rounded-lg self-start w-full sm:w-auto overflow-x-auto no-scrollbar"
                   >
                     {[
                       { id: 'all', label: 'All (3)' },
@@ -671,7 +674,7 @@ export default function App() {
                           onClick={() =>
                             setLookbookFilter(tab.id as 'all' | 'team-dress' | 'tools-kit')
                           }
-                          className={`px-3.5 py-2 text-xs font-medium rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                          className={`min-h-[42px] px-3.5 py-2 text-xs font-medium rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                             active
                               ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)]'
                               : 'text-[var(--brand-ink)]/75 hover:text-[var(--brand-ink)]'
@@ -874,10 +877,10 @@ export default function App() {
             <section
               id="services"
               aria-labelledby="services-heading"
-              className="py-24 md:py-32 bg-[var(--brand-canvas)]"
+              className="py-16 sm:py-24 md:py-32 bg-[var(--brand-canvas)]"
             >
-              <div className="max-w-[1360px] mx-auto px-6 md:px-10">
-                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-14">
+              <div className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-10">
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 sm:gap-8 mb-10 sm:mb-14">
                   <div className="max-w-2xl">
                     <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)] mb-3">
                       Our Services
@@ -888,18 +891,18 @@ export default function App() {
                     >
                       Thoughtful Care for Every Kind of Space.
                     </h2>
-                    <p className="mt-4 text-base text-[var(--brand-ink)]/80 leading-relaxed">
+                    <p className="mt-3 sm:mt-4 text-sm sm:text-base text-[var(--brand-ink)]/80 leading-relaxed">
                       From the comfort of your home to the professionalism of your workplace, every
                       service is delivered with care, precision, and attention to the details that
                       matter.
                     </p>
                   </div>
 
-                  {/* Interactive Filter Bar */}
+                  {/* Interactive Filter Bar (Swipeable on Phone) */}
                   <div
                     role="tablist"
                     aria-label="Filter cleaning services by category"
-                    className="flex flex-wrap items-center gap-1.5 p-1.5 bg-[var(--brand-surface)] border border-[var(--brand-ink)]/10 rounded-lg self-start"
+                    className="flex flex-nowrap sm:flex-wrap items-center gap-1.5 p-1.5 bg-[var(--brand-surface)] border border-[var(--brand-ink)]/10 rounded-lg self-start w-full sm:w-auto overflow-x-auto no-scrollbar"
                   >
                     {[
                       { id: 'all', label: 'All Services (6)' },
@@ -919,7 +922,7 @@ export default function App() {
                               tab.id as 'all' | 'residential' | 'commercial' | 'specialty'
                             )
                           }
-                          className={`px-3.5 py-2 text-xs font-medium rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                          className={`min-h-[42px] px-3.5 py-2 text-xs font-medium rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                             active
                               ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)]'
                               : 'text-[var(--brand-ink)]/75 hover:text-[var(--brand-ink)]'
@@ -998,10 +1001,10 @@ export default function App() {
             <section
               id="properties"
               aria-labelledby="properties-heading"
-              className="py-24 md:py-32 bg-[var(--brand-surface)] border-y border-[var(--brand-ink)]/10"
+              className="py-16 sm:py-24 md:py-32 bg-[var(--brand-surface)] border-y border-[var(--brand-ink)]/10"
             >
-              <div className="max-w-[1360px] mx-auto px-6 md:px-10">
-                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-14">
+              <div className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-10">
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 sm:gap-8 mb-10 sm:mb-14">
                   <div className="max-w-2xl">
                     <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-primary)] mb-3">
                       California Portfolio · Properties We Care For
@@ -1012,18 +1015,18 @@ export default function App() {
                     >
                       Representative Estates, Penthouses & Studios.
                     </h2>
-                    <p className="mt-4 text-base text-[var(--brand-ink)]/80 leading-relaxed">
+                    <p className="mt-3 sm:mt-4 text-sm sm:text-base text-[var(--brand-ink)]/80 leading-relaxed">
                       Explore how our uniformed teams and surface-specific equipment care for
                       distinctive residential and commercial properties across Beverly Hills,
                       Malibu, San Francisco, Montecito, and Bel Air.
                     </p>
                   </div>
 
-                  {/* Interactive Filter Bar for Properties */}
+                  {/* Interactive Filter Bar for Properties (Swipeable on Phone) */}
                   <div
                     role="tablist"
                     aria-label="Filter California properties by architectural category"
-                    className="flex flex-wrap items-center gap-1.5 p-1.5 bg-[var(--brand-canvas)] border border-[var(--brand-ink)]/10 rounded-lg self-start"
+                    className="flex flex-nowrap sm:flex-wrap items-center gap-1.5 p-1.5 bg-[var(--brand-canvas)] border border-[var(--brand-ink)]/10 rounded-lg self-start w-full sm:w-auto overflow-x-auto no-scrollbar"
                   >
                     {[
                       { id: 'all', label: 'All Properties (6)' },
@@ -1047,7 +1050,7 @@ export default function App() {
                                 | 'commercial-studio'
                             )
                           }
-                          className={`px-3.5 py-2 text-xs font-medium rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                          className={`min-h-[42px] px-3.5 py-2 text-xs font-medium rounded transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                             active
                               ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)]'
                               : 'text-[var(--brand-ink)]/75 hover:text-[var(--brand-ink)]'
@@ -1752,7 +1755,7 @@ export default function App() {
         {/* 16. FOOTER */}
         <footer
           id="contact"
-          className="bg-[var(--brand-primary)] text-[var(--brand-canvas)] border-t border-[var(--brand-canvas)]/15 pt-16 pb-12"
+          className="bg-[var(--brand-primary)] text-[var(--brand-canvas)] border-t border-[var(--brand-canvas)]/15 pt-14 sm:pt-16 pb-24 sm:pb-12"
         >
           <div className="max-w-[1360px] mx-auto px-6 md:px-10">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-14 border-b border-[var(--brand-canvas)]/15">
@@ -1999,15 +2002,17 @@ export default function App() {
           </div>
         </footer>
 
-        {/* AGENCY LOOKBOOK PHOTO & EQUIPMENT SPECIFICATION MODAL */}
+        {/* AGENCY LOOKBOOK PHOTO & EQUIPMENT SPECIFICATION MODAL (Mobile Bottom Sheet) */}
         {activeLookbookModal && (
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="lookbook-modal-title"
-            className="fixed inset-0 z-50 bg-[var(--brand-ink)]/75 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6"
+            className="fixed inset-0 z-50 bg-[var(--brand-ink)]/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-6"
           >
-            <div className="bg-[var(--brand-canvas)] text-[var(--brand-ink)] border border-[var(--brand-ink)]/20 rounded-lg max-w-2xl w-full overflow-hidden shadow-2xl">
+            <div className="bg-[var(--brand-canvas)] text-[var(--brand-ink)] border-t sm:border border-[var(--brand-ink)]/20 rounded-t-2xl sm:rounded-lg max-w-2xl w-full max-h-[90dvh] overflow-y-auto shadow-2xl pb-safe">
+              {/* Mobile Sheet Grab Handle */}
+              <div className="sm:hidden w-10 h-1.5 bg-[var(--brand-ink)]/20 rounded-full mx-auto my-2.5" />
               <div className="relative aspect-[16/10] bg-[var(--brand-ink)]">
                 <ResilientImage
                   src={activeLookbookModal.image}
@@ -2019,19 +2024,19 @@ export default function App() {
                   type="button"
                   onClick={() => setActiveLookbookModal(null)}
                   aria-label="Close lookbook photo details"
-                  className="absolute top-4 right-4 z-20 p-2 bg-[var(--brand-ink)]/80 text-[var(--brand-canvas)] rounded-full hover:bg-[var(--brand-primary)] transition-colors cursor-pointer"
+                  className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 min-h-[44px] min-w-[44px] flex items-center justify-center bg-[var(--brand-ink)]/85 text-[var(--brand-canvas)] rounded-full hover:bg-[var(--brand-primary)] transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="p-6 sm:p-8">
+              <div className="p-5 sm:p-8">
                 <p className="text-xs font-mono-tabular text-[var(--brand-primary)]">
                   Lookbook {activeLookbookModal.number} · {activeLookbookModal.categoryLabel}
                 </p>
                 <h3
                   id="lookbook-modal-title"
-                  className="font-serif-display text-3xl font-medium text-[var(--brand-ink)] mt-1"
+                  className="font-serif-display text-2xl sm:text-3xl font-medium text-[var(--brand-ink)] mt-1"
                 >
                   {activeLookbookModal.title}
                 </h3>
@@ -2039,7 +2044,7 @@ export default function App() {
                   {activeLookbookModal.description}
                 </p>
 
-                <div className="mt-6 pt-5 border-t border-[var(--brand-ink)]/10">
+                <div className="mt-5 pt-4 border-t border-[var(--brand-ink)]/10">
                   <h4 className="text-xs font-semibold tracking-wider text-[var(--brand-primary)] mb-3">
                     Agency Uniform & Equipment Standards
                   </h4>
@@ -2053,11 +2058,11 @@ export default function App() {
                   </ul>
                 </div>
 
-                <div className="mt-7 flex flex-wrap items-center justify-end gap-3">
+                <div className="mt-6 flex flex-col-reverse sm:flex-row sm:items-center justify-end gap-2.5 sm:gap-3">
                   <button
                     type="button"
                     onClick={() => setActiveLookbookModal(null)}
-                    className="px-4 py-2.5 border border-[var(--brand-ink)]/25 text-xs font-medium rounded hover:border-[var(--brand-ink)] cursor-pointer"
+                    className="w-full sm:w-auto min-h-[44px] px-4 py-2.5 border border-[var(--brand-ink)]/25 text-xs font-medium rounded hover:border-[var(--brand-ink)] cursor-pointer"
                   >
                     Close
                   </button>
@@ -2067,7 +2072,7 @@ export default function App() {
                       setActiveLookbookModal(null);
                       openBookNowPage();
                     }}
-                    className="px-6 py-2.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-wider rounded hover:bg-[var(--brand-primary-hover)] cursor-pointer"
+                    className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-wider rounded hover:bg-[var(--brand-primary-hover)] cursor-pointer"
                   >
                     Book Our Uniformed Team
                   </button>
@@ -2077,16 +2082,17 @@ export default function App() {
           </div>
         )}
 
-        {/* PROPERTY CARE PROTOCOL MODAL */}
+        {/* PROPERTY CARE PROTOCOL MODAL (Mobile Bottom Sheet) */}
         {activePropertyModal && (
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="property-modal-title"
-            className="fixed inset-0 z-50 bg-[var(--brand-ink)]/75 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6"
+            className="fixed inset-0 z-50 bg-[var(--brand-ink)]/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-6"
           >
-            <div className="bg-[var(--brand-canvas)] text-[var(--brand-ink)] border border-[var(--brand-ink)]/20 rounded-lg max-w-2xl w-full overflow-hidden shadow-2xl">
-              <div className="relative h-56 bg-[var(--brand-ink)]">
+            <div className="bg-[var(--brand-canvas)] text-[var(--brand-ink)] border-t sm:border border-[var(--brand-ink)]/20 rounded-t-2xl sm:rounded-lg max-w-2xl w-full max-h-[90dvh] overflow-y-auto shadow-2xl pb-safe">
+              <div className="sm:hidden w-10 h-1.5 bg-[var(--brand-ink)]/20 rounded-full mx-auto my-2.5" />
+              <div className="relative h-48 sm:h-56 bg-[var(--brand-ink)]">
                 <ResilientImage
                   src={activePropertyModal.image}
                   alt={activePropertyModal.imageAlt}
@@ -2097,13 +2103,13 @@ export default function App() {
                   type="button"
                   onClick={() => setActivePropertyModal(null)}
                   aria-label="Close property protocol details"
-                  className="absolute top-4 right-4 z-20 p-2 bg-[var(--brand-ink)]/80 text-[var(--brand-canvas)] rounded-full hover:bg-[var(--brand-primary)] transition-colors cursor-pointer"
+                  className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 min-h-[44px] min-w-[44px] flex items-center justify-center bg-[var(--brand-ink)]/85 text-[var(--brand-canvas)] rounded-full hover:bg-[var(--brand-primary)] transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="p-6 sm:p-8">
+              <div className="p-5 sm:p-8">
                 <div className="flex flex-wrap items-center gap-2 text-xs font-mono-tabular text-[var(--brand-primary)]">
                   <span>Property {activePropertyModal.number}</span>
                   <span aria-hidden="true">·</span>
@@ -2116,7 +2122,7 @@ export default function App() {
 
                 <h3
                   id="property-modal-title"
-                  className="font-serif-display text-3xl font-medium text-[var(--brand-ink)] mt-1"
+                  className="font-serif-display text-2xl sm:text-3xl font-medium text-[var(--brand-ink)] mt-1"
                 >
                   {activePropertyModal.title}
                 </h3>
@@ -2124,7 +2130,7 @@ export default function App() {
                   {activePropertyModal.summary}
                 </p>
 
-                <div className="mt-6 pt-5 border-t border-[var(--brand-ink)]/10 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="mt-5 pt-4 border-t border-[var(--brand-ink)]/10 grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
                   <div>
                     <h4 className="text-xs font-semibold tracking-wider text-[var(--brand-primary)] mb-2.5">
                       Architectural Surfaces Treated
@@ -2154,11 +2160,11 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="mt-7 flex flex-wrap items-center justify-end gap-3">
+                <div className="mt-6 flex flex-col-reverse sm:flex-row sm:items-center justify-end gap-2.5 sm:gap-3">
                   <button
                     type="button"
                     onClick={() => setActivePropertyModal(null)}
-                    className="px-4 py-2.5 border border-[var(--brand-ink)]/25 text-xs font-medium rounded hover:border-[var(--brand-ink)] cursor-pointer"
+                    className="w-full sm:w-auto min-h-[44px] px-4 py-2.5 border border-[var(--brand-ink)]/25 text-xs font-medium rounded hover:border-[var(--brand-ink)] cursor-pointer"
                   >
                     Close
                   </button>
@@ -2173,7 +2179,7 @@ export default function App() {
                         prop.location
                       );
                     }}
-                    className="px-6 py-2.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-wider rounded hover:bg-[var(--brand-primary-hover)] cursor-pointer"
+                    className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-wider rounded hover:bg-[var(--brand-primary-hover)] cursor-pointer"
                   >
                     Request Quote for Similar Property
                   </button>
@@ -2183,16 +2189,17 @@ export default function App() {
           </div>
         )}
 
-        {/* SERVICE SPECIFICATION MODAL */}
+        {/* SERVICE SPECIFICATION MODAL (Mobile Bottom Sheet) */}
         {activeServiceModal && (
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="service-modal-title"
-            className="fixed inset-0 z-50 bg-[var(--brand-ink)]/75 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6"
+            className="fixed inset-0 z-50 bg-[var(--brand-ink)]/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-6"
           >
-            <div className="bg-[var(--brand-canvas)] text-[var(--brand-ink)] border border-[var(--brand-ink)]/20 rounded-lg max-w-2xl w-full overflow-hidden shadow-2xl">
-              <div className="relative h-52 bg-[var(--brand-ink)]">
+            <div className="bg-[var(--brand-canvas)] text-[var(--brand-ink)] border-t sm:border border-[var(--brand-ink)]/20 rounded-t-2xl sm:rounded-lg max-w-2xl w-full max-h-[90dvh] overflow-y-auto shadow-2xl pb-safe">
+              <div className="sm:hidden w-10 h-1.5 bg-[var(--brand-ink)]/20 rounded-full mx-auto my-2.5" />
+              <div className="relative h-48 sm:h-52 bg-[var(--brand-ink)]">
                 <ResilientImage
                   src={activeServiceModal.image}
                   alt={activeServiceModal.imageAlt}
@@ -2202,19 +2209,19 @@ export default function App() {
                   type="button"
                   onClick={() => setActiveServiceModal(null)}
                   aria-label="Close service details"
-                  className="absolute top-4 right-4 p-2 bg-[var(--brand-ink)]/80 text-[var(--brand-canvas)] rounded-full hover:bg-[var(--brand-primary)] transition-colors cursor-pointer"
+                  className="absolute top-3 right-3 sm:top-4 sm:right-4 min-h-[44px] min-w-[44px] flex items-center justify-center bg-[var(--brand-ink)]/85 text-[var(--brand-canvas)] rounded-full hover:bg-[var(--brand-primary)] transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="p-6 sm:p-8">
+              <div className="p-5 sm:p-8">
                 <p className="text-xs font-mono-tabular text-[var(--brand-primary)]">
                   Service {activeServiceModal.number} · {activeServiceModal.category}
                 </p>
                 <h3
                   id="service-modal-title"
-                  className="font-serif-display text-3xl font-medium text-[var(--brand-ink)] mt-1"
+                  className="font-serif-display text-2xl sm:text-3xl font-medium text-[var(--brand-ink)] mt-1"
                 >
                   {activeServiceModal.title}
                 </h3>
@@ -2222,7 +2229,7 @@ export default function App() {
                   {activeServiceModal.description}
                 </p>
 
-                <div className="mt-6 pt-5 border-t border-[var(--brand-ink)]/10">
+                <div className="mt-5 pt-4 border-t border-[var(--brand-ink)]/10">
                   <h4 className="text-xs font-semibold tracking-wider text-[var(--brand-primary)] mb-3">
                     Standard Scope Considerations
                   </h4>
@@ -2236,16 +2243,16 @@ export default function App() {
                   </ul>
                 </div>
 
-                <div className="mt-5 p-4 bg-[var(--brand-surface)] rounded text-xs text-[var(--brand-ink)]/80">
+                <div className="mt-4 p-4 bg-[var(--brand-surface)] rounded text-xs text-[var(--brand-ink)]/80">
                   <strong>Architectural Surface Protocol:</strong>{' '}
                   {activeServiceModal.surfaceCareNotes}
                 </div>
 
-                <div className="mt-7 flex flex-wrap items-center justify-end gap-3">
+                <div className="mt-6 flex flex-col-reverse sm:flex-row sm:items-center justify-end gap-2.5 sm:gap-3">
                   <button
                     type="button"
                     onClick={() => setActiveServiceModal(null)}
-                    className="px-4 py-2.5 border border-[var(--brand-ink)]/25 text-xs font-medium rounded hover:border-[var(--brand-ink)] cursor-pointer"
+                    className="w-full sm:w-auto min-h-[44px] px-4 py-2.5 border border-[var(--brand-ink)]/25 text-xs font-medium rounded hover:border-[var(--brand-ink)] cursor-pointer"
                   >
                     Close
                   </button>
@@ -2256,7 +2263,7 @@ export default function App() {
                       setActiveServiceModal(null);
                       openBookNowPage(chosen);
                     }}
-                    className="px-6 py-2.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-wider rounded hover:bg-[var(--brand-primary-hover)] cursor-pointer"
+                    className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold tracking-wider rounded hover:bg-[var(--brand-primary-hover)] cursor-pointer"
                   >
                     Request a Quote for This Service
                   </button>
@@ -2272,9 +2279,10 @@ export default function App() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="legal-modal-title"
-            className="fixed inset-0 z-50 bg-[var(--brand-ink)]/75 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6"
+            className="fixed inset-0 z-50 bg-[var(--brand-ink)]/75 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-6"
           >
-            <div className="bg-[var(--brand-canvas)] text-[var(--brand-ink)] border border-[var(--brand-ink)]/20 rounded-lg max-w-xl w-full p-6 sm:p-8 shadow-2xl">
+            <div className="bg-[var(--brand-canvas)] text-[var(--brand-ink)] border-t sm:border border-[var(--brand-ink)]/20 rounded-t-2xl sm:rounded-lg max-w-xl w-full p-5 sm:p-8 shadow-2xl pb-safe">
+              <div className="sm:hidden w-10 h-1.5 bg-[var(--brand-ink)]/20 rounded-full mx-auto mb-3" />
               <div className="flex items-center justify-between pb-4 border-b border-[var(--brand-ink)]/10">
                 <h3 id="legal-modal-title" className="font-serif-display text-2xl font-medium">
                   {legalModal === 'privacy' ? 'Privacy Policy' : 'Terms of Service'}
@@ -2283,7 +2291,7 @@ export default function App() {
                   type="button"
                   onClick={() => setLegalModal(null)}
                   aria-label="Close modal"
-                  className="p-1.5 text-[var(--brand-ink)]/70 hover:text-[var(--brand-ink)] cursor-pointer"
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center text-[var(--brand-ink)]/70 hover:text-[var(--brand-ink)] cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -2342,7 +2350,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setLegalModal(null)}
-                  className="px-5 py-2.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold rounded cursor-pointer"
+                  className="w-full sm:w-auto min-h-[44px] px-5 py-2.5 bg-[var(--brand-primary)] text-[var(--brand-canvas)] text-xs font-semibold rounded cursor-pointer"
                 >
                   Close
                 </button>
@@ -2351,7 +2359,46 @@ export default function App() {
           </div>
         )}
 
-        {/* LIVE CONCIGE CHAT INTEGRATION */}
+        {/* MOBILE THUMB-ZONE BOTTOM NAVIGATION BAR (Phone Viewports Only) */}
+        <nav
+          aria-label="Mobile Quick Navigation"
+          className="sm:hidden fixed bottom-0 left-0 right-0 z-40 h-14 pb-safe bg-[var(--brand-canvas)]/95 backdrop-blur-md border-t border-[var(--brand-ink)]/15 grid grid-cols-4 items-center px-2"
+        >
+          <button
+            type="button"
+            onClick={() => navigateToHomeSection('services')}
+            className="min-h-[44px] flex flex-col items-center justify-center text-[11px] font-medium text-[var(--brand-ink)]/85 active:text-[var(--brand-primary)] cursor-pointer"
+          >
+            <span className="truncate">Services</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => navigateToHomeSection('properties')}
+            className="min-h-[44px] flex flex-col items-center justify-center text-[11px] font-medium text-[var(--brand-ink)]/85 active:text-[var(--brand-primary)] cursor-pointer"
+          >
+            <span className="truncate">Properties</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => navigateToHomeSection('california-map')}
+            className="min-h-[44px] flex flex-col items-center justify-center text-[11px] font-medium text-[var(--brand-ink)]/85 active:text-[var(--brand-primary)] cursor-pointer"
+          >
+            <span className="truncate">CA Map</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => openBookNowPage()}
+            className={`min-h-[38px] mx-1 rounded text-[11px] font-semibold tracking-wider flex items-center justify-center cursor-pointer ${
+              activePage === 'book'
+                ? 'bg-[var(--brand-accent)] text-[var(--brand-ink)]'
+                : 'bg-[var(--brand-primary)] text-[var(--brand-canvas)]'
+            }`}
+          >
+            <span className="truncate">Book Quote</span>
+          </button>
+        </nav>
+
+        {/* LIVE CONCIERGE CHAT INTEGRATION */}
         <LiveConciergeChat
           onOpenBookPage={() => openBookNowPage()}
           onNavigateSection={navigateToHomeSection}

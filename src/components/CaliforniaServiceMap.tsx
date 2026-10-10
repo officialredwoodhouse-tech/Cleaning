@@ -265,7 +265,7 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
             <p className="text-xs font-semibold tracking-wider text-[var(--brand-ink)]/70 mb-3">
               Select a California Service Corridor
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2 max-h-[300px] overflow-y-auto pr-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2 max-h-[260px] sm:max-h-[300px] overflow-y-auto pr-1">
               {CALIFORNIA_REGIONS.map((region) => {
                 const isSelected = selectedRegion.id === region.id;
                 return (
@@ -273,7 +273,7 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
                     key={region.id}
                     type="button"
                     onClick={() => setSelectedRegion(region)}
-                    className={`w-full text-left p-3 rounded border transition-all duration-150 cursor-pointer flex items-start justify-between gap-3 ${
+                    className={`w-full min-h-[52px] text-left p-3 rounded border transition-all duration-150 cursor-pointer flex items-start justify-between gap-3 ${
                       isSelected
                         ? 'bg-[var(--brand-primary)] text-[var(--brand-canvas)] border-[var(--brand-primary)]'
                         : 'bg-white/70 text-[var(--brand-ink)] border-[var(--brand-ink)]/10 hover:border-[var(--brand-primary)]/50'
@@ -326,10 +326,10 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
                   verifiedPlace.displayName
                 )
               }
-              className="mt-4 w-full py-3 px-4 bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded flex items-center justify-center gap-2 transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              className="mt-4 w-full min-h-[48px] py-3 px-4 bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-[var(--brand-canvas)] text-xs font-semibold tracking-[0.12em] rounded flex items-center justify-center gap-2 transition-colors cursor-pointer truncate"
             >
-              <span>Book Cleaning in {verifiedPlace.displayName}</span>
-              <ArrowRight className="w-4 h-4 text-[var(--brand-accent)]" />
+              <span className="truncate">Book Cleaning in {verifiedPlace.displayName}</span>
+              <ArrowRight className="w-4 h-4 text-[var(--brand-accent)] shrink-0" />
             </button>
           </div>
         )}
@@ -338,7 +338,9 @@ export const CaliforniaServiceMap: React.FC<CaliforniaServiceMapProps> = ({
       {/* Right Column: Interactive Google Map with AdvancedMarker & InfoWindow */}
       <div
         className={`lg:col-span-7 relative rounded-lg overflow-hidden border border-[var(--brand-ink)]/15 bg-[var(--brand-surface)] ${
-          compact ? 'h-[420px]' : 'h-[540px] lg:h-auto lg:min-h-[540px]'
+          compact
+            ? 'h-[310px] sm:h-[420px]'
+            : 'h-[340px] sm:h-[480px] lg:h-auto lg:min-h-[540px]'
         }`}
       >
         <Map

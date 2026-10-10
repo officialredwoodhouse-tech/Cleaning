@@ -61,25 +61,25 @@ export const BookNowPage: React.FC<BookNowPageProps> = ({
   };
 
   return (
-    <div className="pt-20 bg-[var(--brand-canvas)] min-h-screen">
+    <div className="pt-14 sm:pt-16 md:pt-20 bg-[var(--brand-canvas)] min-h-screen">
       {/* Top Banner */}
-      <section className="bg-[var(--brand-primary)] text-[var(--brand-canvas)] py-16 md:py-20 border-b border-[var(--brand-accent)]/20">
-        <div className="max-w-[1360px] mx-auto px-6 md:px-10">
+      <section className="bg-[var(--brand-primary)] text-[var(--brand-canvas)] py-10 sm:py-16 md:py-20 border-b border-[var(--brand-accent)]/20">
+        <div className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-10">
           <button
             type="button"
             onClick={onBackToHome}
-            className="inline-flex items-center gap-2 text-xs font-medium tracking-[0.14em] text-[var(--brand-accent)] hover:text-[var(--brand-canvas)] transition-colors mb-6 cursor-pointer whitespace-nowrap shrink-0"
+            className="inline-flex items-center gap-2 min-h-[44px] text-xs font-medium tracking-[0.14em] text-[var(--brand-accent)] hover:text-[var(--brand-canvas)] transition-colors mb-3 sm:mb-6 cursor-pointer whitespace-nowrap shrink-0"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Return to Main Residence Overview</span>
           </button>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-end">
             <div className="lg:col-span-8">
-              <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-surface)]/80 mb-3">
+              <p className="text-xs font-medium tracking-[0.16em] text-[var(--brand-surface)]/80 mb-2 sm:mb-3">
                 Book Now · California Private & Commercial Concierge
               </p>
-              <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl font-normal text-[var(--brand-canvas)] leading-[1.08]">
+              <h1 className="font-serif-display text-3xl sm:text-5xl lg:text-6xl font-normal text-[var(--brand-canvas)] leading-[1.08]">
                 Your Space. Your Requirements. Your Quote.
               </h1>
             </div>
@@ -94,8 +94,8 @@ export const BookNowPage: React.FC<BookNowPageProps> = ({
       </section>
 
       {/* Main Booking Engine + Concierge Sidebar */}
-      <section id="book-now-engine" className="py-16 md:py-24">
-        <div className="max-w-[1360px] mx-auto px-6 md:px-10">
+      <section id="book-now-engine" className="py-10 sm:py-16 md:py-24">
+        <div className="max-w-[1360px] mx-auto px-4 sm:px-6 md:px-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             {/* Left 8 Columns: 4-Step Interactive Booking Form */}
             <div className="lg:col-span-8">
